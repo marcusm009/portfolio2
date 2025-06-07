@@ -1,5 +1,4 @@
 import * as BABYLON from '@babylonjs/core'
-import * as ADDONS from '@babylonjs/addons'
 import { HtmlBox } from './HtmlBox';
 
 export class App {
@@ -53,10 +52,24 @@ var createScene = function (engine: BABYLON.Engine) {
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-    var camera = new BABYLON.ArcRotateCamera("camera1", 1, 1, 5, new BABYLON.Vector3(4, 3.5, 1.5), scene);
+    var camera = new BABYLON.ArcRotateCamera("camera1",
+        2, // longitudinal axis
+        2, // latitudinal axis
+        4, // radius
+        new BABYLON.Vector3(4, 3.5, 1.5), // target
+        scene
+    );
     camera.setTarget(new BABYLON.Vector3(0, 2, 0));
+    camera.wheelDeltaPercentage = .01;
+    camera.checkCollisions = true;
+    camera.lowerRadiusLimit = 2.75;
+    camera.upperRadiusLimit = 5;
+    //camera.radius = 5;
 
-    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+    var light = new BABYLON.HemisphericLight("light",
+        new BABYLON.Vector3(0, 1, 0),
+        scene
+    );
     light.intensity = 0.7;
 
     // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);

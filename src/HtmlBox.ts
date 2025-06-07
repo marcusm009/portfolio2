@@ -39,14 +39,17 @@ export class HtmlBox {
 
             if (i < htmlElements.length)
             {
-                const htmlMesh = new ADDONS.HtmlMesh(scene, `${i}`);
+                const htmlMesh = new ADDONS.HtmlMesh(scene, `${i}`, {
+                    captureOnPointerEnter: true,
+                    isCanvasOverlay: false
+                });
                 htmlMesh.setContent(htmlElements[i], this.size, this.size);
                 mesh = htmlMesh;
             }
             else
             {
                 mesh = BABYLON.MeshBuilder.CreatePlane(`${i}`, {
-                    size: this.size
+                    size: 1 * this.size
                 });
             }
 
