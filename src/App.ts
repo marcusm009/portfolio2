@@ -5,12 +5,12 @@ export class App {
     canvas: HTMLCanvasElement;
     engine: BABYLON.Engine;
     scene: BABYLON.Scene;
-    isDebugMode: boolean = false;
+    isDebugMode: boolean = true;
 
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.engine = this.createEngine();
-        this.scene = createScene(this.canvas, this.engine);
+        this.scene = createScene(this.engine);
 
         window.addEventListener('resize', () => {
             this.engine.resize();
@@ -38,10 +38,10 @@ export class App {
         this.isDebugMode = debugOn;
         if (debugOn) {
             // this.scene.debugLayer.show({ overlay: true });
-            this.scene.activeCamera?.attachControl(this.canvas, true);
+            this.scene.activeCamera?.attachControl(true);
         } else {
             // this.scene.debugLayer.hide();
-            this.scene.activeCamera?.detachControl(this.canvas);
+            this.scene.activeCamera?.detachControl();
         }
     }
 
@@ -50,13 +50,12 @@ export class App {
       }
 }
 
-var createScene = function (canvas: HTMLCanvasElement, engine: BABYLON.Engine) {
+var createScene = function (engine: BABYLON.Engine) {
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
     var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(4, 3.5, 1.5), scene);
     camera.setTarget(new BABYLON.Vector3(.5, 2, -.0625));
-    camera.attachControl(canvas, true);
     camera.keysUp = [87]; 
     camera.keysDown = [83];
     camera.keysLeft = [65];
