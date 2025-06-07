@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
+import { HtmlBox } from './HtmlBox';
 
 export class App {
     canvas: HTMLCanvasElement;
@@ -71,21 +72,28 @@ var createScene = function (engine: BABYLON.Engine) {
     redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
     box.material = redMaterial;
 
-    createHtmlMeshInstances(scene, box);
+    createHtmlMeshInstances(scene);
 
     return scene;
 };
 
-const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
-    // Create the HtmlMeshRenderer
-    const htmlMeshRenderer = new ADDONS.HtmlMeshRenderer(scene);
+const createHtmlMeshInstances = (scene: BABYLON.Scene) => {
 
-    scene.onDisposeObservable.addOnce(() => {
-        console.log("Scene disposed");
-        htmlMeshRenderer.dispose();
-    });
+    // FRONT
+    const iframeSite = document.createElement('iframe');
+    const siteUrl = 'https://www.babylonjs.com/';
+    iframeSite.src = siteUrl;
+    iframeSite.width = '480px';
+    iframeSite.height = '360px';
 
-    const htmlMeshDiv = new ADDONS.HtmlMesh(scene, "html-mesh-div");
+    // RIGHT
+    const iframePdf = document.createElement('iframe');
+    const pdfUrl = 'https://cdn.glitch.com/3da1885b-3463-4252-8ded-723332b5de34%2FNew_Horizons.pdf#zoom=200?v=1599831745689'
+    iframePdf.src = pdfUrl;
+    iframePdf.width = '480px';
+    iframePdf.height = '360px';
+
+    // BACK
     const div = document.createElement('div');
     div.innerHTML = `
         <form style="padding: 10px; transform: scale(4); transform-origin: 0 0;">
@@ -112,47 +120,14 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
     div.style.backgroundColor = 'white';
     div.style.width = '480px';
     div.style.height = '360px';
-    // Style the form
-    
-    htmlMeshDiv.setContent(div, 4, 3);
-    htmlMeshDiv.rotation.y = Math.PI/2
-    htmlMeshDiv.position.x = -2.01;
-    htmlMeshDiv.parent = box;
 
-    const pdfUrl = 'https://cdn.glitch.com/3da1885b-3463-4252-8ded-723332b5de34%2FNew_Horizons.pdf#zoom=200?v=1599831745689'
-    const htmlMeshPdf = new ADDONS.HtmlMesh(scene, "html-mesh-pdf");
-    const iframePdf = document.createElement('iframe');
-    iframePdf.src = pdfUrl;
-    iframePdf.width = '480px';
-    iframePdf.height = '360px';
-    htmlMeshPdf.setContent(iframePdf, 4, 3);
-    htmlMeshPdf.rotation.y = Math.PI
-    htmlMeshPdf.position.z = 2.01
-    htmlMeshPdf.parent = box;
-
-    // Shows how this can be used to include a website in your scene
-    const siteUrl = 'https://www.babylonjs.com/';
-    const htmlMeshSite = new ADDONS.HtmlMesh(scene, "html-mesh-site");
-    const iframeSite = document.createElement('iframe');
-    iframeSite.src = siteUrl;
-    iframeSite.width = '480px';
-    iframeSite.height = '360px';
-
-    htmlMeshSite.setContent(iframeSite, 4, 3);
-    htmlMeshSite.position.z = -2.01;
-    htmlMeshSite.parent = box;
-    
-    // Shows how this can be used to include a YouTube video in your scene
+    // LEFT
+    const iframeVideo = document.createElement('iframe');
     const videoId = 'zELYw2qEUjI';
     const videoUrl = [ 'https://www.youtube.com/embed/', videoId, '?rel=0&enablejsapi=1&disablekb=1&controls=0&fs=0&modestbranding=1' ].join( '' );
-    const htmlMeshVideo = new ADDONS.HtmlMesh(scene, "html-mesh-video");
-    const iframeVideo = document.createElement('iframe');
     iframeVideo.src = videoUrl;
     iframeVideo.width = '480px';
     iframeVideo.height = '360px';
 
-    htmlMeshVideo.setContent(iframeVideo, 4, 3);
-    htmlMeshVideo.rotation.y = -Math.PI/2
-    htmlMeshVideo.position.x = 2.01;
-    htmlMeshVideo.parent = box;
+    const htmlBox = new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
 }
