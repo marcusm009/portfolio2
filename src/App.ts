@@ -59,8 +59,8 @@ var createScene = function (engine: BABYLON.Engine) {
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    var box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
-    box.position.y = 2;
+    // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
+    // box.position.y = 2;
 
     var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
@@ -68,9 +68,9 @@ var createScene = function (engine: BABYLON.Engine) {
     ground.material = groundMaterial;
     groundMaterial.bumpTexture = new BABYLON.Texture("./normal.jpg", scene);
 
-    var redMaterial = new BABYLON.StandardMaterial("redMaterial", scene);
-    redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
-    box.material = redMaterial;
+    // var redMaterial = new BABYLON.StandardMaterial("redMaterial", scene);
+    // redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
+    // box.material = redMaterial;
 
     createHtmlMeshInstances(scene);
 
@@ -130,4 +130,8 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene) => {
     iframeVideo.height = '360px';
 
     const htmlBox = new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
+    // htmlBox.htmlMeshes[0].isVisible = false;
+    // htmlBox.htmlMeshes[1].isVisible = false;
+    // htmlBox.htmlMeshes[2].isVisible = false;
+    // htmlBox.htmlMeshes[3].isVisible = false;
 }

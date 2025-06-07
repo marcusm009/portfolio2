@@ -3,7 +3,7 @@ import * as ADDONS from '@babylonjs/addons'
 
 export class HtmlBox {
     boxMesh: BABYLON.Mesh;
-    htmlMeshes: ADDONS.HtmlMesh[];
+    sides: BABYLON.Mesh[];
     size: number = 2;
     
     constructor(scene: BABYLON.Scene,
@@ -18,29 +18,50 @@ export class HtmlBox {
 
         this.boxMesh = BABYLON.MeshBuilder.CreateBox("box", { size: this.size }, scene);
         this.boxMesh.position.y = this.size;
+        this.boxMesh.isVisible = false;
 
         const rotationFunctions = [
-            HtmlBox.setFront(this.size),
-            HtmlBox.setRight(this.size),
-            HtmlBox.setBack(this.size),
-            HtmlBox.setLeft(this.size),
+            HtmlBox.setFront  (this.size / 2),
+            HtmlBox.setRight  (this.size / 2),
+            HtmlBox.setBack   (this.size / 2),
+            HtmlBox.setLeft   (this.size / 2),
+            HtmlBox.setTop    (this.size / 2),
+            HtmlBox.setBottom (this.size / 2),
         ];
         
-        this.htmlMeshes = [];
-        htmlElements.forEach((element, idx) => {
-            
-            const htmlMesh = new ADDONS.HtmlMesh(scene, `${idx}`);
-            htmlMesh.setContent(element, 4, 3);
-            rotationFunctions[idx](htmlMesh);
-            htmlMesh.parent = this.boxMesh;
+        const emptyDiv = document.createElement('div');
+        emptyDiv.style.backgroundColor = 'black';
 
-            this.htmlMeshes.push(htmlMesh);
-        });
+        this.sides = [];
+        for (let i = 0; i < 6; i++)
+        {
+            let mesh: BABYLON.Mesh;
+
+            if (i < htmlElements.length)
+            {
+                const htmlMesh = new ADDONS.HtmlMesh(scene, `${i}`);
+                htmlMesh.setContent(htmlElements[i], this.size, this.size);
+                mesh = htmlMesh;
+            }
+            else
+            {
+                mesh = BABYLON.MeshBuilder.CreatePlane(`${i}`, {
+                    size: this.size
+                });
+            }
+
+            rotationFunctions[i](mesh);
+            mesh.parent = this.boxMesh;
+
+            this.sides.push(mesh);
+        }
+        
+        console.log(this.sides);
     }
 
     private static setFront(size: number)
     {
-        return (htmlMesh: ADDONS.HtmlMesh) => {
+        return (htmlMesh: BABYLON.Mesh) => {
             htmlMesh.position.z = -size;
             htmlMesh.rotation.y = 0;
         }
@@ -48,7 +69,7 @@ export class HtmlBox {
 
     private static setRight(size: number)
     {
-        return (htmlMesh: ADDONS.HtmlMesh) => {
+        return (htmlMesh: BABYLON.Mesh) => {
             htmlMesh.position.z = size;
             htmlMesh.rotation.y = Math.PI;
         }
@@ -56,7 +77,7 @@ export class HtmlBox {
 
     private static setBack(size: number)
     {
-        return (htmlMesh: ADDONS.HtmlMesh) => {
+        return (htmlMesh: BABYLON.Mesh) => {
             htmlMesh.position.x = -size;
             htmlMesh.rotation.y = Math.PI/2;
         }
@@ -64,9 +85,25 @@ export class HtmlBox {
 
     private static setLeft(size: number)
     {
-        return (htmlMesh: ADDONS.HtmlMesh) => {
+        return (htmlMesh: BABYLON.Mesh) => {
             htmlMesh.position.x = size;
             htmlMesh.rotation.y = -Math.PI/2;
+        }
+    }
+
+    private static setTop(size: number)
+    {
+        return (htmlMesh: BABYLON.Mesh) => {
+            htmlMesh.position.y = size;
+            htmlMesh.rotation.x = Math.PI/2;
+        }
+    }
+
+    private static setBottom(size: number)
+    {
+        return (htmlMesh: BABYLON.Mesh) => {
+            htmlMesh.position.y = -size;
+            htmlMesh.rotation.x = -Math.PI/2;
         }
     }
 }
