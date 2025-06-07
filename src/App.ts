@@ -54,12 +54,8 @@ var createScene = function (engine: BABYLON.Engine) {
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
 
-    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(4, 3.5, 1.5), scene);
-    camera.setTarget(new BABYLON.Vector3(.5, 2, -.0625));
-    camera.keysUp = [87]; 
-    camera.keysDown = [83];
-    camera.keysLeft = [65];
-    camera.keysRight = [68];
+    var camera = new BABYLON.ArcRotateCamera("camera1", 1, 1, 5, new BABYLON.Vector3(4, 3.5, 1.5), scene);
+    camera.setTarget(new BABYLON.Vector3(0, 2, 0));
 
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
