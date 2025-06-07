@@ -19,8 +19,6 @@ export class App {
         // Add key listener for Q to toggle debug mode
         window.addEventListener('keydown', (event) => {
             if (event.key.toLowerCase() === 'q') {
-                console.log('hello');
-                console.log(this);
                 this.toggleDebug(!this.isDebugMode);
             }
         });
@@ -65,7 +63,7 @@ var createScene = function (engine: BABYLON.Engine) {
 
     var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.diffuseColor = new BABYLON.Color3(0.5, 0.8, 0.5); 
+    groundMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2); 
     ground.material = groundMaterial;
     groundMaterial.bumpTexture = new BABYLON.Texture("./normal.jpg", scene);
 
@@ -87,11 +85,6 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
         htmlMeshRenderer.dispose();
     });
 
-    // Shows how this can be used to include html content, such
-    // as a form, in your scene.  This can be used to create
-    // richer UIs than can be created with the standard Babylon
-    // UI control, albeit with the restriction that such UIs would
-    // not display in native mobile apps or XR applications.
     const htmlMeshDiv = new ADDONS.HtmlMesh(scene, "html-mesh-div");
     const div = document.createElement('div');
     div.innerHTML = `
@@ -126,12 +119,6 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
     htmlMeshDiv.position.x = -2.01;
     htmlMeshDiv.parent = box;
 
-    // Shows how this can be used to include a PDF in your scene.  Note this is 
-    // conceptual only.  Displaying a PDF like this works, but any links in the
-    // PDF will navigate the current tab, which is probably not what you want.
-    // There are other solutions out there such as PDF.js that may give you more
-    // control, but ultimately proper display of PDFs is not within the scope of
-    // this project.
     const pdfUrl = 'https://cdn.glitch.com/3da1885b-3463-4252-8ded-723332b5de34%2FNew_Horizons.pdf#zoom=200?v=1599831745689'
     const htmlMeshPdf = new ADDONS.HtmlMesh(scene, "html-mesh-pdf");
     const iframePdf = document.createElement('iframe');
@@ -141,6 +128,7 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
     htmlMeshPdf.setContent(iframePdf, 4, 3);
     htmlMeshPdf.rotation.y = Math.PI
     htmlMeshPdf.position.z = 2.01
+    htmlMeshPdf.parent = box;
 
     // Shows how this can be used to include a website in your scene
     const siteUrl = 'https://www.babylonjs.com/';
@@ -152,6 +140,7 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
 
     htmlMeshSite.setContent(iframeSite, 4, 3);
     htmlMeshSite.position.z = -2.01;
+    htmlMeshSite.parent = box;
     
     // Shows how this can be used to include a YouTube video in your scene
     const videoId = 'zELYw2qEUjI';
@@ -165,4 +154,5 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene, box: BABYLON.Mesh) => {
     htmlMeshVideo.setContent(iframeVideo, 4, 3);
     htmlMeshVideo.rotation.y = -Math.PI/2
     htmlMeshVideo.position.x = 2.01;
+    htmlMeshVideo.parent = box;
 }
