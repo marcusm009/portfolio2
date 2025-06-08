@@ -7,10 +7,10 @@ export class HtmlBox {
     faces: BABYLON.Mesh[] = [];
     size:  number = 2;
     location: BABYLON.Vector3 = BABYLON.Vector3.Zero();
-    isMoving: boolean = false;
+    canMove: boolean = true;
     
     constructor(scene: BABYLON.Scene,
-        htmlElements:  HTMLElement[]
+        htmlElements: HTMLElement[]
     ) {
         const htmlMeshRenderer = new ADDONS.HtmlMeshRenderer(scene);
 
@@ -23,7 +23,65 @@ export class HtmlBox {
         this.mesh.position.y = this.size / 2;
         this.mesh.isVisible = false;
 
-        const rotationFunctions = [
+        this.setFaces(scene, htmlElements);
+    }
+
+    public async moveXPos()
+    {
+        this.move(Axis.X, true);
+    }
+
+    public async moveXNeg()
+    {
+        this.move(Axis.X, false);
+    }
+
+    public async moveZPos()
+    {
+        this.move(Axis.Z, true);
+    }
+
+    public async moveZNeg()
+    {
+        this.move(Axis.Z, false);
+    }
+
+    public async move(axis: Axis,
+        isPositiveDirection: boolean,
+        steps: number = 20,
+        stepDurationInMs: number = 10)
+    {
+        // todo: replace with move buffer
+        if (!this.canMove)
+            return;
+        this.canMove = false;
+
+        const sign = Utilities.toSign(isPositiveDirection);
+        const transformedSign = sign * Utilities.getRotationSign(axis);
+        
+        const rotationPoint = new BABYLON.Vector3(
+            this.location.x + (sign * (this.size / 2)),
+            this.location.y,
+            this.location.z + (transformedSign * (this.size / 2)));
+
+        for(let i = 0; i < steps; i++)
+        {
+            await Utilities.sleep(stepDurationInMs);
+            this.mesh.rotateAround(rotationPoint,
+                Utilities.getRotationVector(axis),
+                (transformedSign * Math.PI) / (2 * steps));
+        }
+
+        const movement = Utilities.getIdentityVector(axis).scale(sign * this.size)
+        this.location.addInPlace(movement);
+
+        this.canMove = true;
+    }
+
+    private setFaces(scene: BABYLON.Scene,
+        htmlElements: HTMLElement[])
+    {
+        const setFaceFunctions = [
             setFront  (this.size / 2),
             setRight  (this.size / 2),
             setBack   (this.size / 2),
@@ -53,65 +111,12 @@ export class HtmlBox {
                 mesh.material = getEmptyMaterial();
             }
 
-            rotationFunctions[i](mesh);
+            setFaceFunctions[i](mesh);
             mesh.parent = this.mesh;
 
             this.faces.push(mesh);
         }
     }
-
-    public async moveXPos()
-    {
-        this.move(Axis.X, true);
-    }
-
-    public async moveXNeg()
-    {
-        this.move(Axis.X, false);
-    }
-
-    public async moveZPos()
-    {
-        this.move(Axis.Z, true);
-    }
-
-    public async moveZNeg()
-    {
-        this.move(Axis.Z, false);
-    }
-
-    private async move(axis: Axis,
-        isPositiveDirection: boolean,
-        steps: number = 20,
-        stepDurationInMs: number = 10)
-    {
-        // todo: replace with move buffer
-        if (this.isMoving)
-            return;
-        this.isMoving = true;
-
-        const sign = Utilities.toSign(isPositiveDirection);
-        const transformedSign = sign * Utilities.getRotationSign(axis);
-        
-        let rotationPoint = new BABYLON.Vector3(
-            this.location.x + (sign * (this.size / 2)),
-            this.location.y,
-            this.location.z + (transformedSign * (this.size / 2)));
-
-        for(let i = 0; i < steps; i++)
-        {
-            await Utilities.sleep(stepDurationInMs);
-            this.mesh.rotateAround(rotationPoint,
-                Utilities.getRotationVector(axis),
-                (transformedSign * Math.PI) / (2 * steps));
-        }
-
-        const movement = Utilities.getIdentityVector(axis).scale(sign * this.size)
-        this.location.addInPlace(movement);
-
-        this.isMoving = false;
-    }
-
 }
 
 function getEmptyMaterial() : BABYLON.Material
@@ -175,4 +180,3 @@ function setBottom(size: number)
         htmlMesh.rotation.x = -Math.PI/2;
     }
 }
-
