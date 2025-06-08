@@ -54,18 +54,16 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     scene.fogDensity = 0.02;
 
     var camera = new BABYLON.ArcRotateCamera("camera",
-        2, // longitudinal axis
-        2, // latitudinal axis
+        1, // longitudinal axis
+        1, // latitudinal axis
         4, // radius
-        new BABYLON.Vector3(4, 3.5, 1.5), // target
+        new BABYLON.Vector3(0, 1, 0), // target
         scene
     );
-    camera.setTarget(new BABYLON.Vector3(0, 2, 0));
     camera.wheelDeltaPercentage = .01;
     camera.checkCollisions = true;
     camera.lowerRadiusLimit = 2.75;
     camera.upperRadiusLimit = 5;
-    //camera.radius = 5;
 
     var light = new BABYLON.HemisphericLight("light",
         new BABYLON.Vector3(0, 1, 0),
@@ -92,18 +90,19 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
 
     console.log(mesh);
 
-    rotate(mesh);
+    rotate(htmlBox);
 
     return scene;
 };
 
-function rotate(mesh: BABYLON.Mesh)
+function rotate(box: HtmlBox, rotationsRemaining: number = 3)
 {
     setTimeout(() => {
-        mesh.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2048);
-        // console.log(mesh);
-        rotate(mesh);
-    }, 50)
+        box.rotateXPos();
+        console.log(box);
+        if (rotationsRemaining > 1)
+            rotate(box, rotationsRemaining - 1);
+    }, 2000)
 }
 
 function createHtmlBox(scene: BABYLON.Scene): HtmlBox {

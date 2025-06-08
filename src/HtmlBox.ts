@@ -2,9 +2,13 @@ import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
 
 export class HtmlBox {
-    mesh: BABYLON.Mesh;
-    sides: BABYLON.Mesh[];
-    size: number = 2;
+    mesh:  BABYLON.Mesh;
+    faces: BABYLON.Mesh[] = [];
+    size:  number = 2;
+    sides: BABYLON.Vector3[] = [
+        new BABYLON.Vector3(1, 0, 1)
+    ];
+    location: BABYLON.Vector3 = new BABYLON.Vector3(1, 0, 1);
     
     constructor(scene: BABYLON.Scene,
         htmlElements:  HTMLElement[]
@@ -17,19 +21,18 @@ export class HtmlBox {
         });
 
         this.mesh = BABYLON.MeshBuilder.CreateBox("box", { size: this.size }, scene);
-        this.mesh.position.y = this.size;
+        this.mesh.position.y = this.size / 2;
         this.mesh.isVisible = false;
 
         const rotationFunctions = [
-            HtmlBox.setFront  (this.size / 2),
-            HtmlBox.setRight  (this.size / 2),
-            HtmlBox.setBack   (this.size / 2),
-            HtmlBox.setLeft   (this.size / 2),
-            HtmlBox.setTop    (this.size / 2),
-            HtmlBox.setBottom (this.size / 2),
+            setFront  (this.size / 2),
+            setRight  (this.size / 2),
+            setBack   (this.size / 2),
+            setLeft   (this.size / 2),
+            setTop    (this.size / 2),
+            setBottom (this.size / 2),
         ];
 
-        this.sides = [];
         for (let i = 0; i < 6; i++)
         {
             let mesh: BABYLON.Mesh;
@@ -45,82 +48,100 @@ export class HtmlBox {
             }
             else
             {
-
-                
                 mesh = BABYLON.MeshBuilder.CreatePlane(`${i}`, {
                     size: 1 * this.size
                 });
-                mesh.material = HtmlBox.getEmptyMaterial();
+                mesh.material = getEmptyMaterial();
             }
 
             rotationFunctions[i](mesh);
             mesh.parent = this.mesh;
 
-            this.sides.push(mesh);
+            this.faces.push(mesh);
         }
         
         console.log(this.sides);
     }
 
-    private static getEmptyMaterial() : BABYLON.Material
+    public rotateXPos()
     {
-        const myMaterial = new BABYLON.StandardMaterial("myMaterial");
+        this.mesh.rotateAround(this.location,
+            new BABYLON.Vector3(1, 0, 0),
+            Math.PI / 2);
 
-        myMaterial.diffuseColor  = new BABYLON.Color3(1, 0, 1);
-        myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
-        myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
-        myMaterial.ambientColor  = new BABYLON.Color3(0.23, 0.98, 0.53);
-
-        myMaterial.wireframe = true;
-
-        return myMaterial;
+        this.location.x++;
+        this.location.z += 2;
     }
 
-    private static setFront(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.z = -size;
-            htmlMesh.rotation.y = 0;
-        }
-    }
+    // public rotateXNeg()
+    // {
+    //     this.mesh.rotateAround(this.location,
+    //         new BABYLON.Vector3(1, 0, 0),
+    //         -Math.PI / 2);
 
-    private static setRight(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.z = size;
-            htmlMesh.rotation.y = Math.PI;
-        }
-    }
+    //     this.location.x--;
+    //     this.location.z -= 2;
+    // }
+}
 
-    private static setBack(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.x = -size;
-            htmlMesh.rotation.y = Math.PI/2;
-        }
-    }
+function getEmptyMaterial() : BABYLON.Material
+{
+    const myMaterial = new BABYLON.StandardMaterial("myMaterial");
 
-    private static setLeft(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.x = size;
-            htmlMesh.rotation.y = -Math.PI/2;
-        }
-    }
+    myMaterial.diffuseColor  = new BABYLON.Color3(1, 0, 1);
+    myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+    myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+    myMaterial.ambientColor  = new BABYLON.Color3(0.23, 0.98, 0.53);
 
-    private static setTop(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.y = size;
-            htmlMesh.rotation.x = Math.PI/2;
-        }
-    }
+    myMaterial.wireframe = true;
 
-    private static setBottom(size: number)
-    {
-        return (htmlMesh: BABYLON.Mesh) => {
-            htmlMesh.position.y = -size;
-            htmlMesh.rotation.x = -Math.PI/2;
-        }
+    return myMaterial;
+}
+
+function setFront(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.z = -size;
+        htmlMesh.rotation.y = 0;
+    }
+}
+
+function setRight(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.z = size;
+        htmlMesh.rotation.y = Math.PI;
+    }
+}
+
+function setBack(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.x = -size;
+        htmlMesh.rotation.y = Math.PI/2;
+    }
+}
+
+function setLeft(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.x = size;
+        htmlMesh.rotation.y = -Math.PI/2;
+    }
+}
+
+function setTop(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.y = size;
+        htmlMesh.rotation.x = Math.PI/2;
+    }
+}
+
+function setBottom(size: number)
+{
+    return (htmlMesh: BABYLON.Mesh) => {
+        htmlMesh.position.y = -size;
+        htmlMesh.rotation.x = -Math.PI/2;
     }
 }
