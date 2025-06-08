@@ -24,6 +24,21 @@ export class HtmlBox {
         this.mesh.isVisible = false;
 
         this.setFaces(scene, htmlElements);
+
+        this.addCornerX('c01', new BABYLON.Vector3( 0,  1,  1));
+        this.addCornerX('c02', new BABYLON.Vector3( 0,  1, -1));
+        this.addCornerX('c03', new BABYLON.Vector3( 0, -1,  1));
+        this.addCornerX('c04', new BABYLON.Vector3( 0, -1, -1));
+
+        this.addCornerY('c05', new BABYLON.Vector3( 1,  0,  1));
+        this.addCornerY('c06', new BABYLON.Vector3( 1,  0, -1));
+        this.addCornerY('c07', new BABYLON.Vector3(-1,  0,  1));
+        this.addCornerY('c08', new BABYLON.Vector3(-1,  0, -1));
+
+        this.addCornerZ('c09', new BABYLON.Vector3( 1,  1,  0));
+        this.addCornerZ('c10', new BABYLON.Vector3( 1, -1,  0));
+        this.addCornerZ('c11', new BABYLON.Vector3(-1,  1,  0));
+        this.addCornerZ('c12', new BABYLON.Vector3(-1, -1,  0));
     }
 
     public async moveXPos()
@@ -116,6 +131,48 @@ export class HtmlBox {
 
             this.faces.push(mesh);
         }
+    }
+
+    private addCornerX(name: string,
+        position: BABYLON.Vector3,
+        thinness: number = 128)
+    {
+        const corner = BABYLON.MeshBuilder.CreateBox(name,
+            {
+                width:  this.size,
+                height: this.size / thinness,
+                depth:  this.size / thinness,
+            });
+        corner.position = position.scaleInPlace(this.size / 2);
+        corner.parent = this.mesh;
+    }
+
+    private addCornerY(name: string,
+        position: BABYLON.Vector3,
+        thinness: number = 128)
+    {
+        const corner = BABYLON.MeshBuilder.CreateBox(name,
+            {
+                width:  this.size / thinness,
+                height: this.size,
+                depth:  this.size / thinness,
+            });
+        corner.position = position.scaleInPlace(this.size / 2);
+        corner.parent = this.mesh;
+    }
+
+    private addCornerZ(name: string,
+        position: BABYLON.Vector3,
+        thinness: number = 128)
+    {
+        const corner = BABYLON.MeshBuilder.CreateBox(name,
+            {
+                width:  this.size / thinness,
+                height: this.size / thinness,
+                depth:  this.size,
+            });
+        corner.position = position.scaleInPlace(this.size / 2);
+        corner.parent = this.mesh;
     }
 }
 
