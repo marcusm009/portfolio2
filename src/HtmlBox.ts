@@ -5,10 +5,7 @@ export class HtmlBox {
     mesh:  BABYLON.Mesh;
     faces: BABYLON.Mesh[] = [];
     size:  number = 2;
-    sides: BABYLON.Vector3[] = [
-        new BABYLON.Vector3(1, 0, 1)
-    ];
-    location: BABYLON.Vector3 = new BABYLON.Vector3(1, 0, 1);
+    location: BABYLON.Vector3 = BABYLON.Vector3.Zero();
     
     constructor(scene: BABYLON.Scene,
         htmlElements:  HTMLElement[]
@@ -59,29 +56,60 @@ export class HtmlBox {
 
             this.faces.push(mesh);
         }
-        
-        console.log(this.sides);
     }
 
-    public rotateXPos()
+    public moveXPos()
     {
-        this.mesh.rotateAround(this.location,
+        const rotationPoint = new BABYLON.Vector3(this.location.x + 1,
+            this.location.y,
+            this.location.z - 1);
+        
+        this.mesh.rotateAround(rotationPoint,
+            new BABYLON.Vector3(0, 0, 1),
+            -Math.PI / 2);
+
+        this.location.x += 2;
+    }
+
+    public moveXNeg()
+    {
+        const rotationPoint = new BABYLON.Vector3(this.location.x - 1,
+            this.location.y,
+            this.location.z + 1);
+        
+        this.mesh.rotateAround(rotationPoint,
+            new BABYLON.Vector3(0, 0, 1),
+            Math.PI / 2);
+
+        this.location.x -= 2;
+    }
+
+    public moveZPos()
+    {
+        const rotationPoint = new BABYLON.Vector3(this.location.x + 1,
+            this.location.y,
+            this.location.z + 1);
+        
+        this.mesh.rotateAround(rotationPoint,
             new BABYLON.Vector3(1, 0, 0),
             Math.PI / 2);
 
-        this.location.x++;
         this.location.z += 2;
     }
 
-    // public rotateXNeg()
-    // {
-    //     this.mesh.rotateAround(this.location,
-    //         new BABYLON.Vector3(1, 0, 0),
-    //         -Math.PI / 2);
+    public moveZNeg()
+    {
+        const rotationPoint = new BABYLON.Vector3(this.location.x - 1,
+            this.location.y,
+            this.location.z - 1);
+        
+        this.mesh.rotateAround(rotationPoint,
+            new BABYLON.Vector3(1, 0, 0),
+            -Math.PI / 2);
 
-    //     this.location.x--;
-    //     this.location.z -= 2;
-    // }
+        this.location.z -= 2;
+    }
+
 }
 
 function getEmptyMaterial() : BABYLON.Material

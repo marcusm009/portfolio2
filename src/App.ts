@@ -84,24 +84,29 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     // redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
     // box.material = redMaterial;
 
-    const htmlBox = createHtmlBox(scene);
+    const box = createHtmlBox(scene);
 
-    let mesh = htmlBox.mesh;
+    console.log(box);
 
-    console.log(mesh);
+    // box.moveXPos();
+    // box.moveZPos();
 
-    rotate(htmlBox);
+    moveMany(box);
 
     return scene;
 };
 
-function rotate(box: HtmlBox, rotationsRemaining: number = 3)
+function moveMany(box: HtmlBox, movesRemaining: number = 10)
 {
+    let movements = [box.moveXPos, box.moveXNeg, box.moveZPos, box.moveZNeg];
+    
     setTimeout(() => {
-        box.rotateXPos();
+        const movementFunction = getRandomFunction(movements);
+
+        movementFunction.call(box);
         console.log(box);
-        if (rotationsRemaining > 1)
-            rotate(box, rotationsRemaining - 1);
+        if (movesRemaining > 1)
+            moveMany(box, movesRemaining - 1);
     }, 2000)
 }
 
@@ -159,3 +164,8 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlBox {
 
     return new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
 }
+
+function getRandomFunction(array: Array<Function>) {
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+  }
