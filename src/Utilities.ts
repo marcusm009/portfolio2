@@ -12,6 +12,19 @@ export class Utilities
         return booleanSign ? 1 : -1;
     }
 
+    public static getIdentityVector(axis: Axis): BABYLON.Vector3
+    {
+        switch (axis)
+        {
+            case Axis.X:
+                return new BABYLON.Vector3(1, 0, 0);
+            case Axis.Y:
+                return new BABYLON.Vector3(0, 1, 0);
+            case Axis.Z:
+                return new BABYLON.Vector3(0, 0, 1);
+        }
+    }
+
     public static getRotationVector(axis: Axis): BABYLON.Vector3
     {
         switch (axis)

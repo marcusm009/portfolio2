@@ -88,49 +88,26 @@ export class HtmlBox {
         // todo: replace with move buffer
         if (this.isMoving)
             return;
-        
         this.isMoving = true;
 
         const sign = Utilities.toSign(isPositiveDirection);
-        let rotationPoint: BABYLON.Vector3;
-
-        switch (axis)
-        {
-            case Axis.X:
-                rotationPoint = new BABYLON.Vector3(
-                    this.location.x + (sign * (this.size / 2)),
-                    this.location.y,
-                    this.location.z - (sign * (this.size / 2)));
-                break;
-            
-            case Axis.Y:
-                throw new RangeError("Movement along the Y axis is not yet supported");
-            
-            case Axis.Z:
-                rotationPoint = new BABYLON.Vector3(
-                    this.location.x + (sign * (this.size / 2)),
-                    this.location.y,
-                    this.location.z + (sign * (this.size / 2)));
-                break;
-        }
+        const transformedSign = sign * Utilities.getRotationSign(axis);
+        
+        let rotationPoint = new BABYLON.Vector3(
+            this.location.x + (sign * (this.size / 2)),
+            this.location.y,
+            this.location.z + (transformedSign * (this.size / 2)));
 
         for(let i = 0; i < steps; i++)
         {
             await Utilities.sleep(stepDurationInMs);
             this.mesh.rotateAround(rotationPoint,
                 Utilities.getRotationVector(axis),
-                (sign * Utilities.getRotationSign(axis) * Math.PI) / (2 * steps));
+                (transformedSign * Math.PI) / (2 * steps));
         }
 
-        switch (axis)
-        {
-            case Axis.X:
-                this.location.x += (sign * this.size);
-                break;
-            case Axis.Z:
-                this.location.z += (sign * this.size);
-                break;
-        }
+        const movement = Utilities.getIdentityVector(axis).scale(sign * this.size)
+        this.location.addInPlace(movement);
 
         this.isMoving = false;
     }
