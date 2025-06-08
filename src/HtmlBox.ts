@@ -7,6 +7,7 @@ export class HtmlBox {
     faces: BABYLON.Mesh[] = [];
     size:  number = 2;
     location: BABYLON.Vector3 = BABYLON.Vector3.Zero();
+    isMoving: boolean = false;
     
     constructor(scene: BABYLON.Scene,
         htmlElements:  HTMLElement[]
@@ -59,28 +60,24 @@ export class HtmlBox {
         }
     }
 
-    public async moveXPos(steps: number = 20,
-        stepDurationInMs: number = 10)
+    public async moveXPos()
     {
-        this.move(Axis.X, true, steps, stepDurationInMs);
+        this.move(Axis.X, true);
     }
 
-    public async moveXNeg(steps: number = 20,
-        stepDurationInMs: number = 10)
+    public async moveXNeg()
     {
-        this.move(Axis.X, false, steps, stepDurationInMs);
+        this.move(Axis.X, false);
     }
 
-    public async moveZPos(steps: number = 20,
-        stepDurationInMs: number = 10)
+    public async moveZPos()
     {
-        this.move(Axis.Z, true, steps, stepDurationInMs);
+        this.move(Axis.Z, true);
     }
 
-    public async moveZNeg(steps: number = 20,
-        stepDurationInMs: number = 10)
+    public async moveZNeg()
     {
-        this.move(Axis.Z, false, steps, stepDurationInMs);
+        this.move(Axis.Z, false);
     }
 
     private async move(axis: Axis,
@@ -88,6 +85,12 @@ export class HtmlBox {
         steps: number = 20,
         stepDurationInMs: number = 10)
     {
+        // todo: replace with move buffer
+        if (this.isMoving)
+            return;
+        
+        this.isMoving = true;
+
         const sign = Utilities.toSign(isPositiveDirection);
         let rotationPoint: BABYLON.Vector3;
 
@@ -128,6 +131,8 @@ export class HtmlBox {
                 this.location.z += (sign * this.size);
                 break;
         }
+
+        this.isMoving = false;
     }
 
 }
