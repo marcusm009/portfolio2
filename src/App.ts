@@ -93,21 +93,21 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
 
     // moveMany(box);
 
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener('keydown', async (event) => {
         if (event.key.toLowerCase() === 'w')
-            box.moveXNeg();
+            await box.moveXNeg();
     });
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener('keydown', async (event) => {
         if (event.key.toLowerCase() === 'a')
-            box.moveZNeg();
+            await box.moveZNeg();
     });
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener('keydown', async (event) => {
         if (event.key.toLowerCase() === 's')
-            box.moveXPos();
+            await box.moveXPos();
     });
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener('keydown', async (event) => {
         if (event.key.toLowerCase() === 'd')
-            box.moveZPos();
+            await box.moveZPos();
     });
 
     return scene;

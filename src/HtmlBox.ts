@@ -1,5 +1,6 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
+import { Utilities, Axis } from './utilities';
 
 export class HtmlBox {
     mesh:  BABYLON.Mesh;
@@ -58,56 +59,75 @@ export class HtmlBox {
         }
     }
 
-    public moveXPos()
+    public async moveXPos(steps: number = 20,
+        stepDurationInMs: number = 10)
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x + (this.size / 2),
-            this.location.y,
-            this.location.z - (this.size / 2));
-        
-        this.mesh.rotateAround(rotationPoint,
-            new BABYLON.Vector3(0, 0, 1),
-            -Math.PI / 2);
-
-        this.location.x += this.size;
+        this.move(Axis.X, true, steps, stepDurationInMs);
     }
 
-    public moveXNeg()
+    public async moveXNeg(steps: number = 20,
+        stepDurationInMs: number = 10)
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x - (this.size / 2),
-            this.location.y,
-            this.location.z + (this.size / 2));
-        
-        this.mesh.rotateAround(rotationPoint,
-            new BABYLON.Vector3(0, 0, 1),
-            Math.PI / 2);
-
-        this.location.x -= this.size;
+        this.move(Axis.X, false, steps, stepDurationInMs);
     }
 
-    public moveZPos()
+    public async moveZPos(steps: number = 20,
+        stepDurationInMs: number = 10)
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x + (this.size / 2),
-            this.location.y,
-            this.location.z + (this.size / 2));
-        
-        this.mesh.rotateAround(rotationPoint,
-            new BABYLON.Vector3(1, 0, 0),
-            Math.PI / 2);
-
-        this.location.z += this.size;
+        this.move(Axis.Z, true, steps, stepDurationInMs);
     }
 
-    public moveZNeg()
+    public async moveZNeg(steps: number = 20,
+        stepDurationInMs: number = 10)
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x - (this.size / 2),
-            this.location.y,
-            this.location.z - (this.size / 2));
-        
-        this.mesh.rotateAround(rotationPoint,
-            new BABYLON.Vector3(1, 0, 0),
-            -Math.PI / 2);
+        this.move(Axis.Z, false, steps, stepDurationInMs);
+    }
 
-        this.location.z -= this.size;
+    private async move(axis: Axis,
+        isPositiveDirection: boolean,
+        steps: number = 20,
+        stepDurationInMs: number = 10)
+    {
+        const sign = Utilities.toSign(isPositiveDirection);
+        let rotationPoint: BABYLON.Vector3;
+
+        switch (axis)
+        {
+            case Axis.X:
+                rotationPoint = new BABYLON.Vector3(
+                    this.location.x + (sign * (this.size / 2)),
+                    this.location.y,
+                    this.location.z - (sign * (this.size / 2)));
+                break;
+            
+            case Axis.Y:
+                throw new RangeError("Movement along the Y axis is not yet supported");
+            
+            case Axis.Z:
+                rotationPoint = new BABYLON.Vector3(
+                    this.location.x + (sign * (this.size / 2)),
+                    this.location.y,
+                    this.location.z + (sign * (this.size / 2)));
+                break;
+        }
+
+        for(let i = 0; i < steps; i++)
+        {
+            await Utilities.sleep(stepDurationInMs);
+            this.mesh.rotateAround(rotationPoint,
+                Utilities.getRotationVector(axis),
+                (sign * Utilities.getRotationSign(axis) * Math.PI) / (2 * steps));
+        }
+
+        switch (axis)
+        {
+            case Axis.X:
+                this.location.x += (sign * this.size);
+                break;
+            case Axis.Z:
+                this.location.z += (sign * this.size);
+                break;
+        }
     }
 
 }
@@ -173,3 +193,4 @@ function setBottom(size: number)
         htmlMesh.rotation.x = -Math.PI/2;
     }
 }
+
