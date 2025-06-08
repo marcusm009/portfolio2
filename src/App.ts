@@ -63,7 +63,7 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     camera.wheelDeltaPercentage = .01;
     camera.checkCollisions = true;
     camera.lowerRadiusLimit = 2.75;
-    camera.upperRadiusLimit = 5;
+    camera.upperRadiusLimit = 10;
 
     var light = new BABYLON.HemisphericLight("light",
         new BABYLON.Vector3(0, 1, 0),
@@ -91,7 +91,24 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     // box.moveXPos();
     // box.moveZPos();
 
-    moveMany(box);
+    // moveMany(box);
+
+    window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'w')
+            box.moveXNeg();
+    });
+    window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'a')
+            box.moveZNeg();
+    });
+    window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 's')
+            box.moveXPos();
+    });
+    window.addEventListener('keydown', (event) => {
+        if (event.key.toLowerCase() === 'd')
+            box.moveZPos();
+    });
 
     return scene;
 };

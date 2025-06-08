@@ -60,54 +60,54 @@ export class HtmlBox {
 
     public moveXPos()
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x + 1,
+        const rotationPoint = new BABYLON.Vector3(this.location.x + (this.size / 2),
             this.location.y,
-            this.location.z - 1);
+            this.location.z - (this.size / 2));
         
         this.mesh.rotateAround(rotationPoint,
             new BABYLON.Vector3(0, 0, 1),
             -Math.PI / 2);
 
-        this.location.x += 2;
+        this.location.x += this.size;
     }
 
     public moveXNeg()
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x - 1,
+        const rotationPoint = new BABYLON.Vector3(this.location.x - (this.size / 2),
             this.location.y,
-            this.location.z + 1);
+            this.location.z + (this.size / 2));
         
         this.mesh.rotateAround(rotationPoint,
             new BABYLON.Vector3(0, 0, 1),
             Math.PI / 2);
 
-        this.location.x -= 2;
+        this.location.x -= this.size;
     }
 
     public moveZPos()
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x + 1,
+        const rotationPoint = new BABYLON.Vector3(this.location.x + (this.size / 2),
             this.location.y,
-            this.location.z + 1);
+            this.location.z + (this.size / 2));
         
         this.mesh.rotateAround(rotationPoint,
             new BABYLON.Vector3(1, 0, 0),
             Math.PI / 2);
 
-        this.location.z += 2;
+        this.location.z += this.size;
     }
 
     public moveZNeg()
     {
-        const rotationPoint = new BABYLON.Vector3(this.location.x - 1,
+        const rotationPoint = new BABYLON.Vector3(this.location.x - (this.size / 2),
             this.location.y,
-            this.location.z - 1);
+            this.location.z - (this.size / 2));
         
         this.mesh.rotateAround(rotationPoint,
             new BABYLON.Vector3(1, 0, 0),
             -Math.PI / 2);
 
-        this.location.z -= 2;
+        this.location.z -= this.size;
     }
 
 }
@@ -121,7 +121,7 @@ function getEmptyMaterial() : BABYLON.Material
     myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
     myMaterial.ambientColor  = new BABYLON.Color3(0.23, 0.98, 0.53);
 
-    myMaterial.wireframe = true;
+    // myMaterial.wireframe = true;
 
     return myMaterial;
 }
