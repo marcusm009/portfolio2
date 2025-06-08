@@ -2,7 +2,7 @@ import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
 
 export class HtmlBox {
-    boxMesh: BABYLON.Mesh;
+    mesh: BABYLON.Mesh;
     sides: BABYLON.Mesh[];
     size: number = 2;
     
@@ -16,9 +16,9 @@ export class HtmlBox {
             htmlMeshRenderer.dispose();
         });
 
-        this.boxMesh = BABYLON.MeshBuilder.CreateBox("box", { size: this.size }, scene);
-        this.boxMesh.position.y = this.size;
-        this.boxMesh.isVisible = false;
+        this.mesh = BABYLON.MeshBuilder.CreateBox("box", { size: this.size }, scene);
+        this.mesh.position.y = this.size;
+        this.mesh.isVisible = false;
 
         const rotationFunctions = [
             HtmlBox.setFront  (this.size / 2),
@@ -28,9 +28,6 @@ export class HtmlBox {
             HtmlBox.setTop    (this.size / 2),
             HtmlBox.setBottom (this.size / 2),
         ];
-        
-        const emptyDiv = document.createElement('div');
-        emptyDiv.style.backgroundColor = 'black';
 
         this.sides = [];
         for (let i = 0; i < 6; i++)
@@ -48,18 +45,35 @@ export class HtmlBox {
             }
             else
             {
+
+                
                 mesh = BABYLON.MeshBuilder.CreatePlane(`${i}`, {
                     size: 1 * this.size
                 });
+                mesh.material = HtmlBox.getEmptyMaterial();
             }
 
             rotationFunctions[i](mesh);
-            mesh.parent = this.boxMesh;
+            mesh.parent = this.mesh;
 
             this.sides.push(mesh);
         }
         
         console.log(this.sides);
+    }
+
+    private static getEmptyMaterial() : BABYLON.Material
+    {
+        const myMaterial = new BABYLON.StandardMaterial("myMaterial");
+
+        myMaterial.diffuseColor  = new BABYLON.Color3(1, 0, 1);
+        myMaterial.specularColor = new BABYLON.Color3(0.5, 0.6, 0.87);
+        myMaterial.emissiveColor = new BABYLON.Color3(1, 1, 1);
+        myMaterial.ambientColor  = new BABYLON.Color3(0.23, 0.98, 0.53);
+
+        myMaterial.wireframe = true;
+
+        return myMaterial;
     }
 
     private static setFront(size: number)

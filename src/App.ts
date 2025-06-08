@@ -24,8 +24,7 @@ export class App {
         });
     }
 
-    run() {
-        // Initialize engine with WebGPU support
+    public run() {
         this.toggleDebug(this.isDebugMode);
         this.engine.runRenderLoop(() => {
             this.scene.render();
@@ -48,11 +47,13 @@ export class App {
       }
 }
 
-var createScene = function (engine: BABYLON.Engine) {
+function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
+    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    scene.fogDensity = 0.02;
 
-    var camera = new BABYLON.ArcRotateCamera("camera1",
+    var camera = new BABYLON.ArcRotateCamera("camera",
         2, // longitudinal axis
         2, // latitudinal axis
         4, // radius
@@ -75,9 +76,9 @@ var createScene = function (engine: BABYLON.Engine) {
     // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
     // box.position.y = 2;
 
-    var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 6, height: 6 }, scene);
+    var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 60, height: 60 }, scene);
     var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.diffuseColor = new BABYLON.Color3(0.2, 0.2, 0.2); 
+    groundMaterial.diffuseColor = BABYLON.Color3.Teal();
     ground.material = groundMaterial;
     groundMaterial.bumpTexture = new BABYLON.Texture("./normal.jpg", scene);
 
@@ -85,12 +86,27 @@ var createScene = function (engine: BABYLON.Engine) {
     // redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
     // box.material = redMaterial;
 
-    createHtmlMeshInstances(scene);
+    const htmlBox = createHtmlBox(scene);
+
+    let mesh = htmlBox.mesh;
+
+    console.log(mesh);
+
+    rotate(mesh);
 
     return scene;
 };
 
-const createHtmlMeshInstances = (scene: BABYLON.Scene) => {
+function rotate(mesh: BABYLON.Mesh)
+{
+    setTimeout(() => {
+        mesh.rotate(new BABYLON.Vector3(0, 1, 0), Math.PI / 2048);
+        // console.log(mesh);
+        rotate(mesh);
+    }, 50)
+}
+
+function createHtmlBox(scene: BABYLON.Scene): HtmlBox {
 
     // FRONT
     const iframeSite = document.createElement('iframe');
@@ -142,9 +158,5 @@ const createHtmlMeshInstances = (scene: BABYLON.Scene) => {
     iframeVideo.width = '480px';
     iframeVideo.height = '360px';
 
-    const htmlBox = new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
-    // htmlBox.htmlMeshes[0].isVisible = false;
-    // htmlBox.htmlMeshes[1].isVisible = false;
-    // htmlBox.htmlMeshes[2].isVisible = false;
-    // htmlBox.htmlMeshes[3].isVisible = false;
+    return new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
 }
