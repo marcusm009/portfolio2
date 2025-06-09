@@ -1,5 +1,7 @@
 import * as BABYLON from '@babylonjs/core'
 import { HtmlBox } from './HtmlBox';
+import { HtmlRectangularPrism } from './HtmlRectangularPrism';
+import { HtmlFace } from './HtmlFace';
 
 export class App {
     canvas: HTMLCanvasElement;
@@ -127,7 +129,7 @@ function moveMany(box: HtmlBox, movesRemaining: number = 10)
     }, 2000)
 }
 
-function createHtmlBox(scene: BABYLON.Scene): HtmlBox {
+function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
 
     // FRONT
     const iframeSite = document.createElement('iframe');
@@ -179,7 +181,19 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlBox {
     iframeVideo.width = '480px';
     iframeVideo.height = '360px';
 
-    return new HtmlBox(scene, [iframeSite, iframePdf, div, iframeVideo]);
+    // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
+    const box = new HtmlRectangularPrism(scene, []);
+
+    const face = new HtmlFace(scene,
+        iframeSite,
+        5,
+        10,
+        0.1,
+        new BABYLON.Vector3(1, 2, 3),
+        new BABYLON.Vector3(-Math.PI / 4, Math.PI / 2, -Math.PI / 2)
+    );
+
+    return box;
 }
 
 function getRandomFunction(array: Array<Function>) {
