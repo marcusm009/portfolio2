@@ -1,7 +1,7 @@
 import * as BABYLON from '@babylonjs/core'
-import { HtmlBox } from './HtmlBox';
-import { HtmlRectangularPrism } from './HtmlRectangularPrism';
-import { HtmlFace } from './HtmlFace';
+import { HtmlBox } from './shapes/HtmlBox';
+import { HtmlRectangularPrism } from './shapes/HtmlRectangularPrism';
+import { HtmlFace } from './shapes/HtmlFace';
 
 export class App {
     canvas: HTMLCanvasElement;
@@ -186,8 +186,8 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
 
     const face = new HtmlFace(scene,
         iframeSite,
-        5,
-        10,
+        2,
+        2,
         0.1,
         new BABYLON.Vector3(1, 2, 3),
         new BABYLON.Vector3(-Math.PI / 4, Math.PI / 2, -Math.PI / 2)

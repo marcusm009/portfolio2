@@ -1,8 +1,8 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
-import { Utilities, Axis } from './utilities';
+import { Utilities, Axis } from '../utilities';
 
-export class HtmlBox {
+export class HtmlRectangularPrism {
     mesh:  BABYLON.Mesh;
     faces: BABYLON.Mesh[] = [];
     size:  number = 2;
@@ -19,8 +19,12 @@ export class HtmlBox {
             htmlMeshRenderer.dispose();
         });
 
-        this.mesh = BABYLON.MeshBuilder.CreateBox("box", { size: this.size }, scene);
-        this.mesh.position.y = this.size / 2;
+        this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
+            width: this.size,
+            height: this.size * 2,
+            depth: this.size
+        }, scene);
+        this.mesh.position.y = this.size;
         this.mesh.isVisible = false;
 
         this.setFaces(scene, htmlElements);
@@ -116,6 +120,7 @@ export class HtmlBox {
                     isCanvasOverlay: false
                 });
                 htmlMesh.setContent(htmlElements[i], this.size, this.size);
+                htmlMesh.isVisible = false;
                 mesh = htmlMesh;
             }
             else
