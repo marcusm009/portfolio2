@@ -1,8 +1,8 @@
 import * as BABYLON from '@babylonjs/core'
 import { HtmlBox } from './shapes/HtmlBox';
 import { HtmlRectangularPrism } from './shapes/HtmlRectangularPrism';
-import { HtmlFace } from './shapes/HtmlFace';
-import { PlaneFace } from './shapes/PlaneFace';
+import { HtmlFace } from './shapes/faces/HtmlFace';
+import { PlaneFace } from './shapes/faces/PlaneFace';
 
 export class App {
     canvas: HTMLCanvasElement;
