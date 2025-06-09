@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core'
+import type { IFace } from './IFace';
 
-export class PlaneFace {
+export class PlaneFace implements IFace {
     mesh: BABYLON.Mesh;
     face: BABYLON.Mesh;
     edges: BABYLON.Mesh[] = [];

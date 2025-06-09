@@ -1,7 +1,8 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
+import type { IFace } from './IFace';
 
-export class HtmlFace {
+export class HtmlFace implements IFace {
     mesh: BABYLON.Mesh;
     face: ADDONS.HtmlMesh;
     edges: BABYLON.Mesh[] = [];

@@ -1,6 +1,7 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
 import { Utilities, Axis } from '../utilities';
+import type { IFace } from './faces/IFace';
 
 export class HtmlRectangularPrism {
     mesh:  BABYLON.Mesh;
