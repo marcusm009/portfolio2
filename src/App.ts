@@ -2,6 +2,7 @@ import * as BABYLON from '@babylonjs/core'
 import { HtmlBox } from './shapes/HtmlBox';
 import { HtmlRectangularPrism } from './shapes/HtmlRectangularPrism';
 import { HtmlFace } from './shapes/HtmlFace';
+import { PlaneFace } from './shapes/PlaneFace';
 
 export class App {
     canvas: HTMLCanvasElement;
@@ -184,13 +185,19 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
     const box = new HtmlRectangularPrism(scene, []);
 
-    const face = new HtmlFace(scene,
-        iframeSite,
+    // const face = new HtmlFace(scene,
+    //     iframeSite,
+    //     2,
+    //     2,
+    //     0.1,
+    //     new BABYLON.Vector3(1, 2, 3)
+    // );
+
+    const face = new PlaneFace(scene,
         2,
         2,
         0.1,
-        new BABYLON.Vector3(1, 2, 3),
-        new BABYLON.Vector3(-Math.PI / 4, Math.PI / 2, -Math.PI / 2)
+        new BABYLON.Vector3(1, 2, 3)
     );
 
     return box;
