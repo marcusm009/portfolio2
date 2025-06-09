@@ -2,16 +2,24 @@ import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
 import { Utilities, Axis } from '../utilities';
 import type { IFace } from './faces/IFace';
+import { HtmlFace } from './faces/HtmlFace';
 
 export class HtmlRectangularPrism {
     mesh:  BABYLON.Mesh;
-    faces: BABYLON.Mesh[] = [];
+    faces: IFace[] = [];
     size:  number = 2;
     location: BABYLON.Vector3 = BABYLON.Vector3.Zero();
     canMove: boolean = true;
     
     constructor(scene: BABYLON.Scene,
-        htmlElements: HTMLElement[]
+        htmlElements: HTMLElement[],
+        width: number,
+        height: number,
+        depth: number,
+        edgeThickness: number,
+        position: BABYLON.Vector3 = BABYLON.Vector3.Zero(),
+        rotation: BABYLON.Vector3 = BABYLON.Vector3.Zero(),
+        id: string = crypto.randomUUID().toString()
     ) {
         const htmlMeshRenderer = new ADDONS.HtmlMeshRenderer(scene);
 
@@ -20,30 +28,12 @@ export class HtmlRectangularPrism {
             htmlMeshRenderer.dispose();
         });
 
-        this.mesh = BABYLON.MeshBuilder.CreateBox("box", {
-            width: this.size,
-            height: this.size * 2,
-            depth: this.size
+        this.mesh = BABYLON.MeshBuilder.CreateBox(id, {
+            width: width,
+            height: height,
+            depth: depth,
         }, scene);
-        this.mesh.position.y = this.size;
         this.mesh.isVisible = false;
-
-        this.setFaces(scene, htmlElements);
-
-        this.addCornerX('c01', new BABYLON.Vector3( 0,  1,  1));
-        this.addCornerX('c02', new BABYLON.Vector3( 0,  1, -1));
-        this.addCornerX('c03', new BABYLON.Vector3( 0, -1,  1));
-        this.addCornerX('c04', new BABYLON.Vector3( 0, -1, -1));
-
-        this.addCornerY('c05', new BABYLON.Vector3( 1,  0,  1));
-        this.addCornerY('c06', new BABYLON.Vector3( 1,  0, -1));
-        this.addCornerY('c07', new BABYLON.Vector3(-1,  0,  1));
-        this.addCornerY('c08', new BABYLON.Vector3(-1,  0, -1));
-
-        this.addCornerZ('c09', new BABYLON.Vector3( 1,  1,  0));
-        this.addCornerZ('c10', new BABYLON.Vector3( 1, -1,  0));
-        this.addCornerZ('c11', new BABYLON.Vector3(-1,  1,  0));
-        this.addCornerZ('c12', new BABYLON.Vector3(-1, -1,  0));
     }
 
     public async moveXPos()
@@ -96,47 +86,6 @@ export class HtmlRectangularPrism {
         this.location.addInPlace(movement);
 
         this.canMove = true;
-    }
-
-    private setFaces(scene: BABYLON.Scene,
-        htmlElements: HTMLElement[])
-    {
-        const setFaceFunctions = [
-            setFront  (this.size / 2),
-            setRight  (this.size / 2),
-            setBack   (this.size / 2),
-            setLeft   (this.size / 2),
-            setTop    (this.size / 2),
-            setBottom (this.size / 2),
-        ];
-
-        for (let i = 0; i < 6; i++)
-        {
-            let mesh: BABYLON.Mesh;
-
-            if (i < htmlElements.length)
-            {
-                const htmlMesh = new ADDONS.HtmlMesh(scene, `${i}`, {
-                    captureOnPointerEnter: true,
-                    isCanvasOverlay: false
-                });
-                htmlMesh.setContent(htmlElements[i], this.size, this.size);
-                htmlMesh.isVisible = false;
-                mesh = htmlMesh;
-            }
-            else
-            {
-                mesh = BABYLON.MeshBuilder.CreatePlane(`${i}`, {
-                    size: 1 * this.size
-                });
-                mesh.material = getEmptyMaterial();
-            }
-
-            setFaceFunctions[i](mesh);
-            mesh.parent = this.mesh;
-
-            this.faces.push(mesh);
-        }
     }
 
     private addCornerX(name: string,
