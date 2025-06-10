@@ -51,7 +51,7 @@ export class HtmlRectangularPrism {
             width,
             height,
             edgeThickness,
-            new BABYLON.Vector3(width / 2, 0, 0),
+            new BABYLON.Vector3(0, 0, -depth / 2),
             BABYLON.Vector3.Zero(),
             this.mesh,
             `${id}-front`
@@ -62,7 +62,7 @@ export class HtmlRectangularPrism {
             depth,
             height,
             edgeThickness,
-            new BABYLON.Vector3(0, 0, depth / 2),
+            new BABYLON.Vector3(-width / 2, 0, 0),
             new BABYLON.Vector3(0, Math.PI / 2, 0),
             this.mesh,
             `${id}-left`
@@ -73,7 +73,7 @@ export class HtmlRectangularPrism {
             width,
             height,
             edgeThickness,
-            new BABYLON.Vector3(width / 2, 0, depth),
+            new BABYLON.Vector3(0, 0, depth / 2),
             new BABYLON.Vector3(0, Math.PI, 0),
             this.mesh,
             `${id}-back`
@@ -84,7 +84,7 @@ export class HtmlRectangularPrism {
             depth,
             height,
             edgeThickness,
-            new BABYLON.Vector3(width, 0, depth / 2),
+            new BABYLON.Vector3(width / 2, 0, 0),
             new BABYLON.Vector3(0, -Math.PI / 2, 0),
             this.mesh,
             `${id}-right`
@@ -94,7 +94,7 @@ export class HtmlRectangularPrism {
             width,
             depth,
             edgeThickness,
-            new BABYLON.Vector3(width / 2, height / 2, depth / 2),
+            new BABYLON.Vector3(0, height / 2, 0),
             new BABYLON.Vector3(Math.PI / 2, 0, 0),
             this.mesh,
             `${id}-top`
@@ -104,7 +104,7 @@ export class HtmlRectangularPrism {
             width,
             depth,
             edgeThickness,
-            new BABYLON.Vector3(width / 2, -height / 2, depth / 2),
+            new BABYLON.Vector3(0, -height / 2, 0),
             new BABYLON.Vector3(-Math.PI / 2, 0, 0),
             this.mesh,
             `${id}-bottom`

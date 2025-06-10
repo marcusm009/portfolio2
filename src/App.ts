@@ -183,9 +183,9 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     iframeVideo.height = '360px';
 
     // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
-    const width = 1;
-    const height = 2;
-    const depth = 1.5;
+    const width = 2;
+    const height = 3;
+    const depth = 1;
     const edgeThickness = 0.1;
     
     const box = new HtmlRectangularPrism(scene,
