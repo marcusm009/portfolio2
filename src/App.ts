@@ -139,7 +139,7 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     iframeSite.width = '480px';
     iframeSite.height = '360px';
 
-    // RIGHT
+    // LEFT
     const iframePdf = document.createElement('iframe');
     const pdfUrl = 'https://cdn.glitch.com/3da1885b-3463-4252-8ded-723332b5de34%2FNew_Horizons.pdf#zoom=200?v=1599831745689'
     iframePdf.src = pdfUrl;
@@ -174,7 +174,7 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     div.style.width = '480px';
     div.style.height = '360px';
 
-    // LEFT
+    // RIGHT
     const iframeVideo = document.createElement('iframe');
     const videoId = 'zELYw2qEUjI';
     const videoUrl = [ 'https://www.youtube.com/embed/', videoId, '?rel=0&enablejsapi=1&disablekb=1&controls=0&fs=0&modestbranding=1' ].join( '' );
@@ -183,7 +183,18 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     iframeVideo.height = '360px';
 
     // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
-    const box = new HtmlRectangularPrism(scene, []);
+    const width = 1;
+    const height = 2;
+    const depth = 1.5;
+    const edgeThickness = 0.1;
+    
+    const box = new HtmlRectangularPrism(scene,
+        [iframeSite, iframePdf, div, iframeVideo],
+        width,
+        height,
+        depth,
+        edgeThickness,
+        new BABYLON.Vector3(0, (height + edgeThickness) / 2, 0));
 
     // const face = new HtmlFace(scene,
     //     iframeSite,
@@ -193,12 +204,12 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     //     new BABYLON.Vector3(1, 2, 3)
     // );
 
-    const face = new PlaneFace(scene,
-        2,
-        2,
-        0.1,
-        new BABYLON.Vector3(1, 2, 3)
-    );
+    // const face = new PlaneFace(scene,
+    //     2,
+    //     2,
+    //     0.1,
+    //     new BABYLON.Vector3(1, 2, 3)
+    // );
 
     return box;
 }

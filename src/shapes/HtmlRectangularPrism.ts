@@ -3,6 +3,7 @@ import * as ADDONS from '@babylonjs/addons'
 import { Utilities, Axis } from '../utilities';
 import type { IFace } from './faces/IFace';
 import { HtmlFace } from './faces/HtmlFace';
+import { PlaneFace } from './faces/PlaneFace';
 
 export class HtmlRectangularPrism {
     mesh:  BABYLON.Mesh;
@@ -16,7 +17,7 @@ export class HtmlRectangularPrism {
         width: number,
         height: number,
         depth: number,
-        edgeThickness: number,
+        edgeThickness: number = 0.1,
         position: BABYLON.Vector3 = BABYLON.Vector3.Zero(),
         rotation: BABYLON.Vector3 = BABYLON.Vector3.Zero(),
         id: string = crypto.randomUUID().toString()
@@ -33,7 +34,81 @@ export class HtmlRectangularPrism {
             height: height,
             depth: depth,
         }, scene);
+        this.mesh.position = position;
+        this.mesh.rotation = rotation;
         this.mesh.isVisible = false;
+
+        // for (let i = 0; i < 6; i++)
+        // {
+        //     if (i < htmlElements.length)
+        //     {
+
+        //     }
+        // }
+
+        const frontFace = new HtmlFace(scene,
+            htmlElements[0],
+            width,
+            height,
+            edgeThickness,
+            new BABYLON.Vector3(width / 2, 0, 0),
+            BABYLON.Vector3.Zero(),
+            this.mesh,
+            `${id}-front`
+        );
+
+        const leftFace = new HtmlFace(scene,
+            htmlElements[1],
+            depth,
+            height,
+            edgeThickness,
+            new BABYLON.Vector3(0, 0, depth / 2),
+            new BABYLON.Vector3(0, Math.PI / 2, 0),
+            this.mesh,
+            `${id}-left`
+        );
+
+        const backFace = new HtmlFace(scene,
+            htmlElements[2],
+            width,
+            height,
+            edgeThickness,
+            new BABYLON.Vector3(width / 2, 0, depth),
+            new BABYLON.Vector3(0, Math.PI, 0),
+            this.mesh,
+            `${id}-back`
+        );
+
+        const rightFace = new HtmlFace(scene,
+            htmlElements[3],
+            depth,
+            height,
+            edgeThickness,
+            new BABYLON.Vector3(width, 0, depth / 2),
+            new BABYLON.Vector3(0, -Math.PI / 2, 0),
+            this.mesh,
+            `${id}-right`
+        );
+
+        const topFace = new PlaneFace(scene,
+            width,
+            depth,
+            edgeThickness,
+            new BABYLON.Vector3(width / 2, height / 2, depth / 2),
+            new BABYLON.Vector3(Math.PI / 2, 0, 0),
+            this.mesh,
+            `${id}-top`
+        );
+
+        const bottomFace = new PlaneFace(scene,
+            width,
+            depth,
+            edgeThickness,
+            new BABYLON.Vector3(width / 2, -height / 2, depth / 2),
+            new BABYLON.Vector3(-Math.PI / 2, 0, 0),
+            this.mesh,
+            `${id}-bottom`
+        );
     }
 
     public async moveXPos()
