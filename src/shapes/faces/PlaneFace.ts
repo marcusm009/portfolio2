@@ -1,10 +1,12 @@
 import * as BABYLON from '@babylonjs/core'
 import type { IFace } from './IFace';
+import { Utilities } from '../../utilities';
 
 export class PlaneFace implements IFace {
     mesh: BABYLON.Mesh;
     face: BABYLON.Mesh;
     edges: BABYLON.Mesh[] = [];
+    edgeThickness: number;
     
     constructor(scene: BABYLON.Scene,
         width: number,
@@ -70,7 +72,13 @@ export class PlaneFace implements IFace {
         rightEdge.position = new BABYLON.Vector3(-width/2, 0, 0);
         this.edges.push(rightEdge);
 
+        this.edgeThickness = depth;
+
         if (parent != undefined)
             this.mesh.parent = parent;
+    }
+
+    public isBottom(): boolean {
+        return this.mesh.position.y < 0;
     }
 }

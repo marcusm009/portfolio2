@@ -4,4 +4,6 @@ export interface IFace {
     mesh:  BABYLON.Mesh;
     face:  BABYLON.Mesh;
     edges: BABYLON.Mesh[];
+
+    isBottom(): boolean;
 }

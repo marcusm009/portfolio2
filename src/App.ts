@@ -90,6 +90,7 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     const box = createHtmlBox(scene);
 
     console.log(box);
+    console.log(box.getBottomMesh());
 
     // box.moveXPos();
     // box.moveZPos();
@@ -186,7 +187,9 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     const width = 2;
     const height = 3;
     const depth = 1;
-    const edgeThickness = 0.1;
+    const edgeThickness = 0.05;
+    const startingY = (height + edgeThickness) / 2;
+    // const startingY = 5;
     
     const box = new HtmlRectangularPrism(scene,
         [iframeSite, iframePdf, div, iframeVideo],
@@ -194,22 +197,7 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
         height,
         depth,
         edgeThickness,
-        new BABYLON.Vector3(0, (height + edgeThickness) / 2, 0));
-
-    // const face = new HtmlFace(scene,
-    //     iframeSite,
-    //     2,
-    //     2,
-    //     0.1,
-    //     new BABYLON.Vector3(1, 2, 3)
-    // );
-
-    // const face = new PlaneFace(scene,
-    //     2,
-    //     2,
-    //     0.1,
-    //     new BABYLON.Vector3(1, 2, 3)
-    // );
+        new BABYLON.Vector3(0, startingY, 0));
 
     return box;
 }

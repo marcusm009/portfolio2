@@ -1,11 +1,13 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
 import type { IFace } from './IFace';
+import { Utilities } from '../../utilities';
 
 export class HtmlFace implements IFace {
     mesh: BABYLON.Mesh;
     face: ADDONS.HtmlMesh;
     edges: BABYLON.Mesh[] = [];
+    edgeThickness: number;
     
     constructor(scene: BABYLON.Scene,
         htmlElement: HTMLElement,
@@ -73,7 +75,13 @@ export class HtmlFace implements IFace {
         rightEdge.position = new BABYLON.Vector3(-width/2, 0, 0);
         this.edges.push(rightEdge);
 
+        this.edgeThickness = depth;
+
         if (parent != undefined)
             this.mesh.parent = parent;
+    }
+
+    public isBottom(): boolean {
+        return this.mesh.position.y < 0;
     }
 }

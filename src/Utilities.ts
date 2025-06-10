@@ -50,6 +50,14 @@ export class Utilities
                 return 1;
         }
     }
+
+    public static isAboutEqualTo(number1: number,
+        number2: number,
+        epsilon: number = 0.00001
+    ) : boolean
+    {
+        return Math.abs(number1 - number2) < epsilon;
+    }
 }
 
 export enum Axis

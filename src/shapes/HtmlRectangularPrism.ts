@@ -94,6 +94,17 @@ export class HtmlRectangularPrism {
         );
     }
 
+    public getBottomMesh(): BABYLON.Mesh | undefined
+    {
+        for (let i = 0; i < this.faces.length; i++)
+        {
+            if (this.faces[i].isBottom())
+                return this.faces[i].mesh;
+        }
+
+        return undefined;
+    }
+
     private assignFace(scene: BABYLON.Scene,
         name : string,
         htmlElement: HTMLElement | undefined,
