@@ -154,30 +154,6 @@ export class HtmlRectangularPrism {
         this.move(Axis.Z, false);
     }
 
-    private getRotationX(axis: Axis, isPositiveDirection: boolean) : number
-    {
-        const ortn = this.getOrientation();
-        
-        let distance: number;
-        
-        if (!this.mesh.rotationQuaternion)
-            distance = this.width;
-        // else if (this.mesh.rotationQuaternion)
-        
-        const sign = Utilities.toSign(isPositiveDirection);
-        const transformedSign = sign * Utilities.getRotationSign(axis);
-
-        return sign * (this.width / 2);
-    }
-
-    private getRotationZ(axis: Axis, isPositiveDirection: boolean) : number
-    {
-        const sign = Utilities.toSign(isPositiveDirection);
-        const transformedSign = sign * Utilities.getRotationSign(axis);
-
-        return transformedSign * (this.depth / 2);
-    }
-
     public async move(axis: Axis,
         isPositiveDirection: boolean,
         steps: number = 20,
@@ -188,16 +164,19 @@ export class HtmlRectangularPrism {
             return;
         this.canMove = false;
 
-        console.log(`position: ${this.mesh.position}`)
-        console.log(`rot-quat: ${this.mesh.rotationQuaternion}`)
-
         const sign = Utilities.toSign(isPositiveDirection);
         const transformedSign = sign * Utilities.getRotationSign(axis);
         
-        const rotationPoint = new BABYLON.Vector3(
-            this.mesh.position.x + this.getRotationX(axis, isPositiveDirection),
-            0,
-            this.mesh.position.z + this.getRotationZ(axis, isPositiveDirection));
+        let relativeRotationPoint = BABYLON.Vector3.Zero();
+
+        if (axis == Axis.X)
+            relativeRotationPoint.x = sign * this.getBottomFaceDimensions().x / 2;
+
+        if (axis == Axis.Z)
+            relativeRotationPoint.z = sign * this.getBottomFaceDimensions().y / 2;
+
+        const rotationPoint = this.mesh.position.add(relativeRotationPoint);
+        rotationPoint.y = 0;
 
         for(let i = 0; i < steps; i++)
         {
@@ -207,21 +186,14 @@ export class HtmlRectangularPrism {
                 (transformedSign * Math.PI) / (2 * steps));
         }
 
-        // const scale = sign * (axis == Axis.X ? this.width : this.depth);
-        // const movement = Utilities.getIdentityVector(axis).scale(scale);
-        // this.mesh.position.addInPlace(movement);
-
         this.roundPosition();
 
         // console.log(`width: ${this.width}`);
         // console.log(`depth: ${this.depth}`);
         // console.log(`height: ${this.height}`);
-        
         // console.log(`moving ${isPositiveDirection ? '+' : '-'}${axis}`);
-
         // console.log(`position: ${this.mesh.position}`);
         console.log(`rot-quat: ${this.mesh.rotationQuaternion}`);
-
         console.log(`bottom: ${this.getOrientation().faceOnFloor}`);
         console.log(`bottom-rot: ${this.getOrientation().rotation}`);
         console.log(`bottom-dim: ${this.getBottomFaceDimensions()}`);
@@ -261,6 +233,13 @@ export class HtmlRectangularPrism {
             default:
                 dim = new BABYLON.Vector2(this.height, this.depth);
                 break;
+        }
+
+        if (Math.abs(ortn.rotation) % Math.PI != 0)
+        {
+            const temp = dim.x;
+            dim.x = dim.y;
+            dim.y = temp;
         }
 
         // todo: rotate
