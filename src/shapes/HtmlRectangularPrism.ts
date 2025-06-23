@@ -1,6 +1,6 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
-import { Utilities, Axis } from '../utilities';
+import { Utilities, Axis, Orientation, Face } from '../utilities';
 import type { IFace } from './faces/IFace';
 import { HtmlFace } from './faces/HtmlFace';
 import { PlaneFace } from './faces/PlaneFace';
@@ -10,6 +10,9 @@ export class HtmlRectangularPrism {
     edgeThickness:  number;
     faces: IFace[] = [];
     canMove: boolean = true;
+    width: number;
+    height: number;
+    depth: number;
     
     constructor(scene: BABYLON.Scene,
         htmlElements: HTMLElement[],
@@ -44,7 +47,7 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             width,
             height,
-            new BABYLON.Vector3(0, 0, -depth / 2),
+            new BABYLON.Vector3(0, 0, (-depth / 2)+this.edgeThickness),
             BABYLON.Vector3.Zero()
         );
 
@@ -53,8 +56,8 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             depth,
             height,
-            new BABYLON.Vector3(-width / 2, 0, 0),
-            new BABYLON.Vector3(0, Math.PI / 2, 0),
+            new BABYLON.Vector3((width / 2)-this.edgeThickness, 0, 0),
+            new BABYLON.Vector3(0, -Math.PI / 2, 0),
         );
 
         this.assignFace(scene,
@@ -62,7 +65,7 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             width,
             height,
-            new BABYLON.Vector3(0, 0, depth / 2),
+            new BABYLON.Vector3(0, 0, (depth / 2)-this.edgeThickness),
             new BABYLON.Vector3(0, Math.PI, 0),
         );
 
@@ -71,8 +74,8 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             depth,
             height,
-            new BABYLON.Vector3(width / 2, 0, 0),
-            new BABYLON.Vector3(0, -Math.PI / 2, 0),
+            new BABYLON.Vector3((-width / 2)+this.edgeThickness, 0, 0),
+            new BABYLON.Vector3(0, Math.PI / 2, 0),
         );
 
         this.assignFace(scene,
@@ -80,7 +83,7 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             width,
             depth,
-            new BABYLON.Vector3(0, height / 2, 0),
+            new BABYLON.Vector3(0, (height / 2)-this.edgeThickness, 0),
             new BABYLON.Vector3(Math.PI / 2, 0, 0),
         );
 
@@ -89,20 +92,13 @@ export class HtmlRectangularPrism {
             htmlElements.pop(),
             width,
             depth,
-            new BABYLON.Vector3(0, -height / 2, 0),
+            new BABYLON.Vector3(0, (-height / 2)+this.edgeThickness, 0),
             new BABYLON.Vector3(-Math.PI / 2, 0, 0),
         );
-    }
 
-    public getBottomMesh(): BABYLON.Mesh | undefined
-    {
-        for (let i = 0; i < this.faces.length; i++)
-        {
-            if (this.faces[i].isBottom())
-                return this.faces[i].mesh;
-        }
-
-        return undefined;
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
     }
 
     private assignFace(scene: BABYLON.Scene,
@@ -117,8 +113,8 @@ export class HtmlRectangularPrism {
         const face = htmlElement
             ? new HtmlFace(scene,
                 htmlElement,
-                width,
-                height,
+                width - this.edgeThickness,
+                height - this.edgeThickness,
                 this.edgeThickness,
                 position,
                 rotation,
@@ -126,8 +122,8 @@ export class HtmlRectangularPrism {
                 `${this.mesh.id}-${name}`
             )
             : new PlaneFace(scene,
-                width,
-                height,
+                width - this.edgeThickness,
+                height - this.edgeThickness,
                 this.edgeThickness,
                 position,
                 rotation,
@@ -138,55 +134,136 @@ export class HtmlRectangularPrism {
         this.faces.push(face);
     }
 
-    // public async moveXPos()
-    // {
-    //     this.move(Axis.X, true);
-    // }
+    public async moveXPos()
+    {
+        this.move(Axis.X, true);
+    }
 
-    // public async moveXNeg()
-    // {
-    //     this.move(Axis.X, false);
-    // }
+    public async moveXNeg()
+    {
+        this.move(Axis.X, false);
+    }
 
-    // public async moveZPos()
-    // {
-    //     this.move(Axis.Z, true);
-    // }
+    public async moveZPos()
+    {
+        this.move(Axis.Z, true);
+    }
 
-    // public async moveZNeg()
-    // {
-    //     this.move(Axis.Z, false);
-    // }
+    public async moveZNeg()
+    {
+        this.move(Axis.Z, false);
+    }
 
-    // public async move(axis: Axis,
-    //     isPositiveDirection: boolean,
-    //     steps: number = 20,
-    //     stepDurationInMs: number = 10)
-    // {
-    //     // todo: replace with move buffer
-    //     if (!this.canMove)
-    //         return;
-    //     this.canMove = false;
-
-    //     const sign = Utilities.toSign(isPositiveDirection);
-    //     const transformedSign = sign * Utilities.getRotationSign(axis);
+    private getRotationX(axis: Axis, isPositiveDirection: boolean) : number
+    {
+        const ortn = this.getOrientation();
         
-    //     const rotationPoint = new BABYLON.Vector3(
-    //         this.location.x + (sign * (this.size / 2)),
-    //         this.location.y,
-    //         this.location.z + (transformedSign * (this.size / 2)));
+        let distance: number;
+        
+        if (!this.mesh.rotationQuaternion)
+            distance = this.width;
+        // else if (this.mesh.rotationQuaternion)
+        
+        const sign = Utilities.toSign(isPositiveDirection);
+        const transformedSign = sign * Utilities.getRotationSign(axis);
 
-    //     for(let i = 0; i < steps; i++)
-    //     {
-    //         await Utilities.sleep(stepDurationInMs);
-    //         this.mesh.rotateAround(rotationPoint,
-    //             Utilities.getRotationVector(axis),
-    //             (transformedSign * Math.PI) / (2 * steps));
-    //     }
+        return sign * (this.width / 2);
+    }
 
-    //     const movement = Utilities.getIdentityVector(axis).scale(sign * this.size)
-    //     this.location.addInPlace(movement);
+    private getRotationZ(axis: Axis, isPositiveDirection: boolean) : number
+    {
+        const sign = Utilities.toSign(isPositiveDirection);
+        const transformedSign = sign * Utilities.getRotationSign(axis);
 
-    //     this.canMove = true;
-    // }
+        return transformedSign * (this.depth / 2);
+    }
+
+    public async move(axis: Axis,
+        isPositiveDirection: boolean,
+        steps: number = 20,
+        stepDurationInMs: number = 10)
+    {
+        // todo: replace with move buffer
+        if (!this.canMove)
+            return;
+        this.canMove = false;
+
+        console.log(`position: ${this.mesh.position}`)
+        console.log(`rot-quat: ${this.mesh.rotationQuaternion}`)
+
+        const sign = Utilities.toSign(isPositiveDirection);
+        const transformedSign = sign * Utilities.getRotationSign(axis);
+        
+        const rotationPoint = new BABYLON.Vector3(
+            this.mesh.position.x + this.getRotationX(axis, isPositiveDirection),
+            0,
+            this.mesh.position.z + this.getRotationZ(axis, isPositiveDirection));
+
+        for(let i = 0; i < steps; i++)
+        {
+            await Utilities.sleep(stepDurationInMs);
+            this.mesh.rotateAround(rotationPoint,
+                Utilities.getRotationVector(axis),
+                (transformedSign * Math.PI) / (2 * steps));
+        }
+
+        // const scale = sign * (axis == Axis.X ? this.width : this.depth);
+        // const movement = Utilities.getIdentityVector(axis).scale(scale);
+        // this.mesh.position.addInPlace(movement);
+
+        this.roundPosition();
+
+        // console.log(`width: ${this.width}`);
+        // console.log(`depth: ${this.depth}`);
+        // console.log(`height: ${this.height}`);
+        
+        // console.log(`moving ${isPositiveDirection ? '+' : '-'}${axis}`);
+
+        // console.log(`position: ${this.mesh.position}`);
+        console.log(`rot-quat: ${this.mesh.rotationQuaternion}`);
+
+        console.log(`bottom: ${this.getOrientation().faceOnFloor}`);
+        console.log(`bottom-rot: ${this.getOrientation().rotation}`);
+        console.log(`bottom-dim: ${this.getBottomFaceDimensions()}`);
+
+        this.canMove = true;
+    }
+
+    private async roundPosition()
+    {
+        this.mesh.position.x = Math.round(this.mesh.position.x * 10) / 10;
+        this.mesh.position.y = Math.round(this.mesh.position.y * 10) / 10;
+        this.mesh.position.z = Math.round(this.mesh.position.z * 10) / 10;
+    }
+
+    private getOrientation() : Orientation
+    {
+        return Utilities.quaternionToOrientation(this.mesh.rotationQuaternion);
+    }
+
+    private getBottomFaceDimensions() : BABYLON.Vector2
+    {
+        const ortn = this.getOrientation();
+        let dim: BABYLON.Vector2;
+
+        switch (ortn.faceOnFloor)
+        {
+            case (Face.BOTTOM):
+            case (Face.TOP):
+                dim = new BABYLON.Vector2(this.width, this.depth);
+                break;
+            case (Face.RIGHT):
+            case (Face.LEFT):
+                dim = new BABYLON.Vector2(this.width, this.height);
+                break;
+            case (Face.FRONT):
+            case (Face.BOTTOM):
+            default:
+                dim = new BABYLON.Vector2(this.height, this.depth);
+                break;
+        }
+
+        // todo: rotate
+        return dim;
+    }
 }

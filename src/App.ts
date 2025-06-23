@@ -90,7 +90,6 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     const box = createHtmlBox(scene);
 
     console.log(box);
-    console.log(box.getBottomMesh());
 
     // box.moveXPos();
     // box.moveZPos();
@@ -99,19 +98,19 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
 
     window.addEventListener('keydown', async (event) => {
         if (event.key.toLowerCase() === 'w')
-            await box.moveXNeg();
-    });
-    window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 'a')
-            await box.moveZNeg();
-    });
-    window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 's')
             await box.moveXPos();
     });
     window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 'd')
+        if (event.key.toLowerCase() === 'a')
             await box.moveZPos();
+    });
+    window.addEventListener('keydown', async (event) => {
+        if (event.key.toLowerCase() === 's')
+            await box.moveXNeg();
+    });
+    window.addEventListener('keydown', async (event) => {
+        if (event.key.toLowerCase() === 'd')
+            await box.moveZNeg();
     });
 
     return scene;
@@ -176,23 +175,23 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     div.style.height = '360px';
 
     // RIGHT
-    const iframeVideo = document.createElement('iframe');
+    const youtubeVideo = document.createElement('iframe');
     const videoId = 'zELYw2qEUjI';
     const videoUrl = [ 'https://www.youtube.com/embed/', videoId, '?rel=0&enablejsapi=1&disablekb=1&controls=0&fs=0&modestbranding=1' ].join( '' );
-    iframeVideo.src = videoUrl;
-    iframeVideo.width = '480px';
-    iframeVideo.height = '360px';
+    youtubeVideo.src = videoUrl;
+    youtubeVideo.width = '480px';
+    youtubeVideo.height = '360px';
 
     // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
-    const width = 2;
-    const height = 3;
-    const depth = 1;
+    const width  = 2; // x
+    const height = 3; // y
+    const depth  = 1; // z
     const edgeThickness = 0.05;
     const startingY = (height + edgeThickness) / 2;
     // const startingY = 5;
     
     const box = new HtmlRectangularPrism(scene,
-        [iframeSite, iframePdf, div, iframeVideo],
+        [iframeSite, iframePdf, div, youtubeVideo],
         width,
         height,
         depth,

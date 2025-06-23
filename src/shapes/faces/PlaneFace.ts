@@ -1,6 +1,5 @@
 import * as BABYLON from '@babylonjs/core'
 import type { IFace } from './IFace';
-import { Utilities } from '../../utilities';
 
 export class PlaneFace implements IFace {
     mesh: BABYLON.Mesh;
@@ -76,9 +75,5 @@ export class PlaneFace implements IFace {
 
         if (parent != undefined)
             this.mesh.parent = parent;
-    }
-
-    public isBottom(): boolean {
-        return this.mesh.position.y < 0;
     }
 }
