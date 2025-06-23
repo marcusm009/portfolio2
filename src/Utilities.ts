@@ -55,58 +55,90 @@ export class Utilities
     {
         const s22 = Math.sqrt(2) / 2;
         
-        if (!rotationQuaternion || this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, 0, 1)))
+        // BOTTOM
+        if (!rotationQuaternion ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, 0,  1)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, 0, -1)))
             return new Orientation(Face.BOTTOM, 0);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, s22, 0, s22)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0,  s22, 0,  s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -s22, 0, -s22)))
             return new Orientation(Face.BOTTOM, -Math.PI / 2);
-        // bottom.180
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -s22, 0, s22)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -1, 0, 0)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0,  1, 0, 0)))
+            return new Orientation(Face.BOTTOM, Math.PI);
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -s22, 0,  s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0,  s22, 0, -s22)))
             return new Orientation(Face.BOTTOM, Math.PI / 2);
 
+        // TOP
         if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, -1, 0)) ||
             this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0,  1, 0)))
-            return new Orientation(Face.TOP, Math.PI);
-        // top.90
+            return new Orientation(Face.TOP, 0);
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, 0, -s22, 0)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( s22, 0,  s22, 0)))
+            return new Orientation(Face.TOP, Math.PI / 2);
         if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-1, 0, 0, 0)) ||
             this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( 1, 0, 0, 0)))
             return new Orientation(Face.TOP, Math.PI);
-        // top.270
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( s22, 0, -s22, 0)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, 0,  s22, 0)))
+            return new Orientation(Face.TOP, -Math.PI / 2);
 
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, 0, 0, s22)))
+        // RIGHT
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, 0, 0,  s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( s22, 0, 0, -s22)))
             return new Orientation(Face.RIGHT, 0);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, .5, .5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5,  .5,  .5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5, -.5, -.5, -.5)))
             return new Orientation(Face.RIGHT, Math.PI / 2);
         if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -s22, -s22, 0)) ||
             this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0,  s22,  s22, 0)))
             return new Orientation(Face.RIGHT, Math.PI);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5, -.5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5, -.5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5,  .5,  .5, -.5)))
             return new Orientation(Face.RIGHT, -Math.PI / 2);
 
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(s22, 0, 0, s22)))
+        // LEFT
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(s22, 0, 0, s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, 0, 0, -s22)))
             return new Orientation(Face.LEFT, 0);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(.5, .5, -.5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5,  .5, -.5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5,  .5, -.5)))
             return new Orientation(Face.LEFT, Math.PI / 2);
         if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0,  s22, -s22, 0)) ||
             this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, -s22,  s22, 0)))
             return new Orientation(Face.LEFT, Math.PI);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(.5, -.5, .5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5, -.5,  .5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5,  .5, -.5, -.5)))
             return new Orientation(Face.LEFT, -Math.PI / 2);
 
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, -s22, s22)))
+        // BACK
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, -s22, s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, s22, -s22)))
             return new Orientation(Face.BACK, 0);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, .5, -.5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5,  .5, -.5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5, -.5,  .5, -.5)))
             return new Orientation(Face.BACK, Math.PI / 2);
-        // back.180
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(.5, -.5, -.5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( s22, -s22, 0, 0)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22,  s22, 0, 0)))
+            return new Orientation(Face.BACK, Math.PI);
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5, -.5, -.5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5,  .5,  .5, -.5)))
             return new Orientation(Face.BACK, -Math.PI / 2);
 
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, s22, s22)))
+        // FRONT
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, s22, s22)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(0, 0, -s22, -s22)))
             return new Orientation(Face.FRONT, 0);
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(.5, .5, .5, .5)))
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5,  .5,  .5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5, -.5, -.5)))
             return new Orientation(Face.FRONT, Math.PI / 2);
-        // front.180
-        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5, .5, .5)))
-            return new Orientation(Face.FRONT, Math.PI / 2);
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( s22,  s22, 0, 0)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-s22, -s22, 0, 0)))
+            return new Orientation(Face.FRONT, Math.PI);
+        if (this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion(-.5, -.5,  .5,  .5)) ||
+            this.isAboutEqualToQ(rotationQuaternion, new BABYLON.Quaternion( .5,  .5, -.5, -.5)))
+            return new Orientation(Face.FRONT, -Math.PI / 2);
 
         return new Orientation(Face.UNKNOWN, 0);
     }
