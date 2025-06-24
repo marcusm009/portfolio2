@@ -101,6 +101,67 @@ export class HtmlRectangularPrism {
         this.depth = depth;
     }
 
+    public async moveXPos(): Promise<BABYLON.Vector3>
+    {
+        return this.move(Axis.X, true);
+    }
+
+    public async moveXNeg(): Promise<BABYLON.Vector3>
+    {
+        return this.move(Axis.X, false);
+    }
+
+    public async moveZPos(): Promise<BABYLON.Vector3>
+    {
+        return this.move(Axis.Z, true);
+    }
+
+    public async moveZNeg(): Promise<BABYLON.Vector3>
+    {
+        return this.move(Axis.Z, false);
+    }
+
+    public async move(axis: Axis,
+        isPositiveDirection: boolean,
+        steps: number = 20,
+        stepDurationInMs: number = 10): Promise<BABYLON.Vector3>
+    {
+        // todo: replace with move buffer
+        if (!this.canMove)
+            return BABYLON.Vector3.Zero();
+        this.canMove = false;
+
+        const initialPosition = this.mesh.position.clone();
+
+        const sign = Utilities.toSign(isPositiveDirection);
+        const transformedSign = sign * Utilities.getRotationSign(axis);
+        
+        let relativeRotationPoint = BABYLON.Vector3.Zero();
+
+        if (axis == Axis.X)
+            relativeRotationPoint.x = sign * this.getBottomFaceDimensions().x / 2;
+
+        if (axis == Axis.Z)
+            relativeRotationPoint.z = sign * this.getBottomFaceDimensions().y / 2;
+
+        const rotationPoint = this.mesh.position.add(relativeRotationPoint);
+        rotationPoint.y = 0;
+
+        for(let i = 0; i < steps; i++)
+        {
+            await Utilities.sleep(stepDurationInMs);
+            this.mesh.rotateAround(rotationPoint,
+                Utilities.getRotationVector(axis),
+                (transformedSign * Math.PI) / (2 * steps));
+        }
+
+        this.roundPosition();
+
+        this.canMove = true;
+
+        return this.mesh.position.subtract(initialPosition);
+    }
+
     private assignFace(scene: BABYLON.Scene,
         name : string,
         htmlElement: HTMLElement | undefined,
@@ -132,73 +193,6 @@ export class HtmlRectangularPrism {
             );
 
         this.faces.push(face);
-    }
-
-    public async moveXPos()
-    {
-        this.move(Axis.X, true);
-    }
-
-    public async moveXNeg()
-    {
-        this.move(Axis.X, false);
-    }
-
-    public async moveZPos()
-    {
-        this.move(Axis.Z, true);
-    }
-
-    public async moveZNeg()
-    {
-        this.move(Axis.Z, false);
-    }
-
-    public async move(axis: Axis,
-        isPositiveDirection: boolean,
-        steps: number = 20,
-        stepDurationInMs: number = 10)
-    {
-        // todo: replace with move buffer
-        if (!this.canMove)
-            return;
-        this.canMove = false;
-
-        const sign = Utilities.toSign(isPositiveDirection);
-        const transformedSign = sign * Utilities.getRotationSign(axis);
-        
-        let relativeRotationPoint = BABYLON.Vector3.Zero();
-
-        if (axis == Axis.X)
-            relativeRotationPoint.x = sign * this.getBottomFaceDimensions().x / 2;
-
-        if (axis == Axis.Z)
-            relativeRotationPoint.z = sign * this.getBottomFaceDimensions().y / 2;
-
-        const rotationPoint = this.mesh.position.add(relativeRotationPoint);
-        rotationPoint.y = 0;
-
-        for(let i = 0; i < steps; i++)
-        {
-            await Utilities.sleep(stepDurationInMs);
-            this.mesh.rotateAround(rotationPoint,
-                Utilities.getRotationVector(axis),
-                (transformedSign * Math.PI) / (2 * steps));
-        }
-
-        this.roundPosition();
-
-        // console.log(`width: ${this.width}`);
-        // console.log(`depth: ${this.depth}`);
-        // console.log(`height: ${this.height}`);
-        // console.log(`moving ${isPositiveDirection ? '+' : '-'}${axis}`);
-        // console.log(`position: ${this.mesh.position}`);
-        console.log(`rot-quat: ${this.mesh.rotationQuaternion}`);
-        console.log(`bottom: ${this.getOrientation().faceOnFloor}`);
-        console.log(`bottom-rot: ${this.getOrientation().rotation}`);
-        console.log(`bottom-dim: ${this.getBottomFaceDimensions()}`);
-
-        this.canMove = true;
     }
 
     private async roundPosition()

@@ -1,8 +1,6 @@
 import * as BABYLON from '@babylonjs/core'
-import { HtmlBox } from './shapes/HtmlBox';
 import { HtmlRectangularPrism } from './shapes/HtmlRectangularPrism';
-import { HtmlFace } from './shapes/faces/HtmlFace';
-import { PlaneFace } from './shapes/faces/PlaneFace';
+import { TileGrid } from './ground/TileGrid';
 
 export class App {
     canvas: HTMLCanvasElement;
@@ -17,13 +15,6 @@ export class App {
 
         window.addEventListener('resize', () => {
             this.engine.resize();
-        });
-
-        // Add key listener for Q to toggle debug mode
-        window.addEventListener('keydown', (event) => {
-            if (event.key.toLowerCase() === 'q') {
-                this.toggleDebug(!this.isDebugMode);
-            }
         });
     }
 
@@ -74,61 +65,54 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     );
     light.intensity = 0.7;
 
-    // var box = BABYLON.MeshBuilder.CreateBox("box", { size: 2 }, scene);
-    // box.position.y = 2;
-
-    var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 60, height: 60 }, scene);
-    var groundMaterial = new BABYLON.StandardMaterial("groundMaterial", scene);
-    groundMaterial.diffuseColor = BABYLON.Color3.Teal();
-    ground.material = groundMaterial;
-    groundMaterial.bumpTexture = new BABYLON.Texture("./normal.jpg", scene);
-
-    // var redMaterial = new BABYLON.StandardMaterial("redMaterial", scene);
-    // redMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0); 
-    // box.material = redMaterial;
+    // Create tile grid instead of ground
+    const tileGrid = new TileGrid(scene);
+    
+    // Example: Create a simple pattern of tiles
+    // You can configure this pattern or add tiles individually
+    const tilePattern = [
+        [0.1, 0.1, 0.1, 0.1, 0.1],
+        [0.1, 0.1, 0.1, 0.1, 0.1],
+        [0.1, 0.1, 0.1, 0.1, 0.1],
+        [0.1, 0.1, 0.1, null, 0.1],
+        [0.1, 0.1, 0.1, 0.1, 0.1]
+    ];
+    
+    // Create tiles from pattern (null values create empty spaces)
+    tileGrid.createPattern(tilePattern, -2, -2);
+    
+    // Build the tile grid
+    tileGrid.build();
 
     const box = createHtmlBox(scene);
 
     console.log(box);
 
-    // box.moveXPos();
-    // box.moveZPos();
-
-    // moveMany(box);
+    camera.lockedTarget = box.mesh;
 
     window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 'w')
-            await box.moveXPos();
-    });
-    window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 'a')
-            await box.moveZPos();
-    });
-    window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 's')
-            await box.moveXNeg();
-    });
-    window.addEventListener('keydown', async (event) => {
-        if (event.key.toLowerCase() === 'd')
-            await box.moveZNeg();
+        let movement = BABYLON.Vector3.Zero();
+        
+        switch (event.key.toLowerCase())
+        {
+            case 'w':
+                movement = await box.moveXPos();
+                break;
+            case 'a':
+                movement = await box.moveZPos();
+                break;
+            case 's':
+                movement = await box.moveXNeg();
+                break;
+            case 'd':
+                movement = await box.moveZNeg();
+        }
+
+        console.log(box.mesh.position);
     });
 
     return scene;
 };
-
-function moveMany(box: HtmlBox, movesRemaining: number = 10)
-{
-    let movements = [box.moveXPos, box.moveXNeg, box.moveZPos, box.moveZNeg];
-    
-    setTimeout(() => {
-        const movementFunction = getRandomFunction(movements);
-
-        movementFunction.call(box);
-        console.log(box);
-        if (movesRemaining > 1)
-            moveMany(box, movesRemaining - 1);
-    }, 2000)
-}
 
 function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
 
@@ -182,13 +166,11 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     youtubeVideo.width = '480px';
     youtubeVideo.height = '360px';
 
-    // const box = new HtmlRectangularPrism(scene, [iframeSite, iframePdf, div, iframeVideo]);
-    const width  = 2; // x
-    const height = 3; // y
+    const width  = 1; // x
+    const height = 2; // y
     const depth  = 1; // z
     const edgeThickness = 0.05;
-    const startingY = (height + edgeThickness) / 2;
-    // const startingY = 5;
+    const startingY = height / 2;
     
     const box = new HtmlRectangularPrism(scene,
         [iframeSite, iframePdf, div, youtubeVideo],
