@@ -44,8 +44,47 @@ export class App {
 function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     var scene = new BABYLON.Scene(engine);
     scene.clearColor = new BABYLON.Color4(0, 0, 0, 0);
-    scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-    scene.fogDensity = 0.02;
+    // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+    // scene.fogDensity = 0.02;
+
+    // var envHelperOpts:Partial<BABYLON.IEnvironmentHelperOptions> = {
+    //     enableGroundMirror: true,
+    //     createGround: false,
+    //     // skyboxColor: new BABYLON.Color3(0, 0, 0),
+    //     skyboxTexture: new BABYLON.Texture('https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/textures/2294472375_24a3b8ef46_o.jpg')
+    // }
+    // scene.createDefaultEnvironment(envHelperOpts);
+
+    // Skybox
+    // var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000.0}, scene);
+    // var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+    // skyboxMaterial.backFaceCulling = false;
+    // skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene);
+    // skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    // skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    // skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    // skybox.material = skyboxMaterial;
+
+    // var videoDome = new BABYLON.VideoDome(
+    //     "videoDome",
+    //     ["https://assets.babylonjs.com/photoDomes/solarProbeMission.mp4"],
+    //     {
+    //         resolution: 32,
+    //         clickToPlay: true
+    //     },
+    //     scene
+    // );
+    // videoDome.videoTexture.video.volume = 0;
+
+    var photoDome = new BABYLON.PhotoDome(
+        "testdome",
+        "https://s3.us-east-1.amazonaws.com/mmills.io-resources/3840px-World_elevation_map.png",
+        {
+            resolution: 32,
+            size: 1000
+        },
+        scene
+    );
 
     var camera = new BABYLON.ArcRotateCamera("camera",
         1, // longitudinal axis
@@ -82,7 +121,7 @@ function createScene(engine: BABYLON.Engine): BABYLON.Scene {
     tileGrid.createPattern(tilePattern, -2, -2);
     
     // Build the tile grid
-    tileGrid.build();
+    // tileGrid.build();
 
     const box = createHtmlBox(scene);
 
@@ -169,7 +208,7 @@ function createHtmlBox(scene: BABYLON.Scene): HtmlRectangularPrism {
     const width  = 1; // x
     const height = 2; // y
     const depth  = 1; // z
-    const edgeThickness = 0.05;
+    const edgeThickness = 0.025;
     const startingY = height / 2;
     
     const box = new HtmlRectangularPrism(scene,

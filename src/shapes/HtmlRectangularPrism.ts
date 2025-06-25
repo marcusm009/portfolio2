@@ -1,6 +1,6 @@
 import * as BABYLON from '@babylonjs/core'
 import * as ADDONS from '@babylonjs/addons'
-import { Utilities, Axis, Orientation, Face } from '../utilities';
+import { Utilities, Axis, Orientation, Face } from '../Utilities';
 import type { IFace } from './faces/IFace';
 import { HtmlFace } from './faces/HtmlFace';
 import { PlaneFace } from './faces/PlaneFace';
